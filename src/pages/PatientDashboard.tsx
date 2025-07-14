@@ -15,12 +15,16 @@ import {
   Heart,
   Target,
   Calendar,
-  TrendingUp
+  TrendingUp,
+  Mic,
+  Stethoscope
 } from 'lucide-react';
 import SmartDocChat from '@/components/patient/SmartDocChat';
+import EnhancedSmartDocChat from '@/components/patient/EnhancedSmartDocChat';
 import FitnessTracker from '@/components/patient/FitnessTracker';
 import NutritionPlanner from '@/components/patient/NutritionPlanner';
 import WeatherWidget from '@/components/shared/WeatherWidget';
+import EnhancedWeatherWidget from '@/components/shared/EnhancedWeatherWidget';
 import PharmacyShop from '@/components/patient/PharmacyShop';
 import CommunityGroups from '@/components/patient/CommunityGroups';
 
@@ -89,7 +93,14 @@ const PatientDashboard = () => {
 
           <TabsContent value="overview" className="space-y-6">
             {/* Overview Dashboard */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Weather Widget - Top Left */}
+              <div className="lg:col-span-1">
+                <EnhancedWeatherWidget />
+              </div>
+              
+              {/* Stats Cards */}
+              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card className="hover:shadow-lg transition-shadow">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Today's Steps</CardTitle>
@@ -133,7 +144,50 @@ const PatientDashboard = () => {
                   <p className="text-xs text-muted-foreground">Dr. Smith - Checkup</p>
                 </CardContent>
               </Card>
+              </div>
             </div>
+
+            {/* Enhanced Smart Doc Chat - Prominent Position */}
+            <Card className="bg-gradient-to-r from-blue-50 to-green-50 border-2 border-blue-200">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="w-6 h-6 text-blue-600" />
+                  Smart Doci - Your AI Health Assistant
+                  <Badge className="bg-blue-600 text-white ml-auto">
+                    New Features!
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="flex items-center gap-2 p-3 bg-white rounded-lg">
+                    <MessageCircle className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="font-medium text-sm">Symptom Analysis</p>
+                      <p className="text-xs text-gray-600">AI-powered health insights</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-white rounded-lg">
+                    <Mic className="w-5 h-5 text-green-600" />
+                    <div>
+                      <p className="font-medium text-sm">Voice Search</p>
+                      <p className="text-xs text-gray-600">Speak your symptoms</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-white rounded-lg">
+                    <Stethoscope className="w-5 h-5 text-purple-600" />
+                    <div>
+                      <p className="font-medium text-sm">Doctor Connect</p>
+                      <p className="text-xs text-gray-600">Talk to real doctors</p>
+                    </div>
+                  </div>
+                </div>
+                <Button className="w-full bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700">
+                  <Brain className="w-4 h-4 mr-2" />
+                  Start Conversation with Smart Doci
+                </Button>
+              </CardContent>
+            </Card>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
@@ -163,14 +217,12 @@ const PatientDashboard = () => {
                 </Card>
               </div>
 
-              <div>
-                <WeatherWidget />
-              </div>
+              {/* Additional dashboard content can go here */}
             </div>
           </TabsContent>
 
           <TabsContent value="smartdoc">
-            <SmartDocChat />
+            <EnhancedSmartDocChat />
           </TabsContent>
 
           <TabsContent value="fitness">

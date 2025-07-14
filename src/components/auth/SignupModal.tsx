@@ -8,6 +8,7 @@ import { Eye, EyeOff, Mail, Lock, User, Stethoscope, Heart } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import HealthQuestionnaire from './HealthQuestionnaire';
 
 interface SignupModalProps {
   open: boolean;
@@ -27,6 +28,7 @@ export default function SignupModal({ open, onOpenChange, userType }: SignupModa
   });
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const { signUp } = useAuth();
 
   const handleInputChange = (field: string, value: string) => {
@@ -85,7 +87,12 @@ export default function SignupModal({ open, onOpenChange, userType }: SignupModa
           setStep(2); // Move to verification step for doctors
         } else {
           toast.success('Account created successfully! Please check your email to verify your account.');
-          onOpenChange(false);
+          // Show health questionnaire for patients
+          if (userType === 'patient') {
+            setShowQuestionnaire(true);
+          } else {
+            onOpenChange(false);
+          }
         }
       }
     } catch (error) {
@@ -101,7 +108,14 @@ export default function SignupModal({ open, onOpenChange, userType }: SignupModa
     setStep(1);
   };
 
+  const handleQuestionnaireComplete = (healthData: any) => {
+    // Save health data to user profile
+    console.log('Health questionnaire completed:', healthData);
+    setShowQuestionnaire(false);
+    onOpenChange(false);
+  };
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -265,5 +279,12 @@ export default function SignupModal({ open, onOpenChange, userType }: SignupModa
         )}
       </DialogContent>
     </Dialog>
+    
+    <HealthQuestionnaire 
+      open={showQuestionnaire}
+      onOpenChange={setShowQuestionnaire}
+      onComplete={handleQuestionnaireComplete}
+    />
+    </>
   );
 }
