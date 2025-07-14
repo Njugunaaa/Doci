@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Mail, Lock, User, Stethoscope, Heart } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SignupModalProps {
   open: boolean;
@@ -24,6 +27,7 @@ export default function SignupModal({ open, onOpenChange, userType }: SignupModa
   });
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const { signUp } = useAuth();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -33,31 +37,68 @@ export default function SignupModal({ open, onOpenChange, userType }: SignupModa
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
+      toast.error('Passwords do not match');
+      return;
+    }
+    
+    if (formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters');
       return;
     }
     
     setLoading(true);
     
-    // Simulate signup process
-    setTimeout(() => {
-      setLoading(false);
-      if (userType === 'doctor') {
-        setStep(2); // Move to verification step for doctors
+    try {
+      const userData = {
+        full_name: formData.fullName,
+        fullName: formData.fullName,
+        user_type: userType,
+        userType: userType,
+      };
+
+      const { error } = await signUp(formData.email, formData.password, userData);
+      
+      if (error) {
+        toast.error(error.message);
       } else {
-        onOpenChange(false);
-        console.log('Patient signed up:', formData);
+        // If doctor, create doctor profile
+        if (userType === 'doctor') {
+          // Wait a moment for the user to be created
+          setTimeout(async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const { error: doctorError } = await supabase
+                .from('doctors')
+                .insert({
+                  id: user.id,
+                  specialization: formData.specialization,
+                  license_number: formData.licenseNumber,
+                  verification_status: 'pending'
+                });
+              
+              if (doctorError) {
+                console.error('Error creating doctor profile:', doctorError);
+              }
+            }
+          }, 1000);
+          
+          setStep(2); // Move to verification step for doctors
+        } else {
+          toast.success('Account created successfully! Please check your email to verify your account.');
+          onOpenChange(false);
+        }
       }
-    }, 1500);
+    } catch (error) {
+      toast.error('An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleVerificationUpload = () => {
-    // Simulate file upload and verification submission
-    setTimeout(() => {
-      onOpenChange(false);
-      setStep(1);
-      console.log('Doctor verification submitted');
-    }, 1000);
+    toast.success('Verification documents submitted! You will receive an email once your account is approved.');
+    onOpenChange(false);
+    setStep(1);
   };
 
   return (
@@ -148,11 +189,12 @@ export default function SignupModal({ open, onOpenChange, userType }: SignupModa
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Create a password"
+                  placeholder="Create a password (min 6 characters)"
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
                   className="pl-10 pr-10"
                   required
+                  minLength={6}
                 />
                 <button
                   type="button"

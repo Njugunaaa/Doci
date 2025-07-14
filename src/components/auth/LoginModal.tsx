@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 interface LoginModalProps {
   open: boolean;
@@ -17,18 +19,28 @@ export default function LoginModal({ open, onOpenChange, userType }: LoginModalP
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate login process
-    setTimeout(() => {
+    try {
+      const { error } = await signIn(email, password);
+      
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success('Successfully signed in!');
+        onOpenChange(false);
+        // Redirect based on user type
+        window.location.href = userType === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard';
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred');
+    } finally {
       setLoading(false);
-      // For now, just close modal - will integrate with Supabase auth later
-      onOpenChange(false);
-      console.log(`Logging in ${userType} with:`, email);
-    }, 1500);
+    }
   };
 
   return (
