@@ -31,7 +31,7 @@ const Index = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
               <Heart className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">HealthPlatform</span>
+            <span className="text-xl font-bold text-gray-900">Doci's</span>
           </div>
           
           <div className="flex gap-2">
@@ -155,7 +155,7 @@ const Index = () => {
               Are you a Healthcare Professional?
             </h2>
             <p className="text-xl opacity-90 mb-8">
-              Join our platform to connect with patients, provide consultations, and be part of a trusted healthcare network.
+              Join Doci's platform to connect with patients, provide consultations, and be part of a trusted healthcare network.
             </p>
             <Button 
               size="lg" 
@@ -174,7 +174,7 @@ const Index = () => {
         <div className="container mx-auto text-center max-w-4xl">
           <Badge className="mb-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
             <Zap className="w-4 h-4 mr-1" />
-            Doci Plus
+            Doci's Plus
           </Badge>
           
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
@@ -216,7 +216,7 @@ const Index = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
               <Heart className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold">HealthPlatform</span>
+            <span className="text-xl font-bold">Doci's</span>
           </div>
           <p className="text-gray-400">
             Your trusted partner in health and wellness

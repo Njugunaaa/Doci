@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,7 +46,7 @@ const PatientDashboard = () => {
             <div className="flex items-center gap-3">
               <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
                 <Crown className="w-3 h-3 mr-1" />
-                Upgrade to Doci Plus
+                Upgrade to Doci's Plus
               </Badge>
               <Button variant="outline" size="sm">Settings</Button>
             </div>
@@ -196,7 +195,7 @@ const PatientDashboard = () => {
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Crown className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-2xl">Upgrade to Doci Plus</CardTitle>
+                <CardTitle className="text-2xl">Upgrade to Doci's Plus</CardTitle>
                 <CardDescription>
                   Unlock premium features for the ultimate health experience
                 </CardDescription>
