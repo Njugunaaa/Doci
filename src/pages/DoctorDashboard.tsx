@@ -16,9 +16,38 @@ import {
   Phone
 } from 'lucide-react';
 import DoctorPatientChat from '@/components/doctor/DoctorPatientChat';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const DoctorDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/login');
+    }
+  }, [user, loading, navigate]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Will redirect via useEffect
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
@@ -41,7 +70,9 @@ const DoctorDashboard = () => {
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                 Available
               </Badge>
-              <Button variant="outline" size="sm">Settings</Button>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                Sign Out
+              </Button>
             </div>
           </div>
         </div>

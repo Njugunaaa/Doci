@@ -6,14 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, Shield, Users, Zap, Stethoscope, Brain, Activity, Apple } from 'lucide-react';
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAuth } from '@/contexts/AuthContext';
-import LoginModal from '@/components/auth/LoginModal';
-import SignupModal from '@/components/auth/SignupModal';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
-  const [showLogin, setShowLogin] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
-  const [userType, setUserType] = useState<'patient' | 'doctor'>('patient');
   const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
 
   // Redirect authenticated users
   useEffect(() => {
@@ -23,14 +20,12 @@ const Index = () => {
     }
   }, [user, loading]);
 
-  const handleLogin = (type: 'patient' | 'doctor') => {
-    setUserType(type);
-    setShowLogin(true);
+  const handleLogin = () => {
+    navigate('/login');
   };
 
-  const handleSignup = (type: 'patient' | 'doctor') => {
-    setUserType(type);
-    setShowSignup(true);
+  const handleSignup = () => {
+    navigate('/signup');
   };
 
   const handleSignOut = async () => {
@@ -65,10 +60,10 @@ const Index = () => {
               </Button>
             ) : (
               <>
-                <Button variant="outline" onClick={() => handleLogin('patient')}>
+                <Button variant="outline" onClick={handleLogin}>
                   Login
                 </Button>
-                <Button onClick={() => handleSignup('patient')} className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                <Button onClick={handleSignup} className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
                   Get Started
                 </Button>
               </>
@@ -98,7 +93,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
               size="lg" 
-              onClick={() => handleSignup('patient')}
+              onClick={handleSignup}
               className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-lg px-8 py-3"
             >
               Start as Patient
@@ -106,7 +101,7 @@ const Index = () => {
             <Button 
               size="lg" 
               variant="outline" 
-              onClick={() => handleSignup('doctor')}
+              onClick={handleSignup}
               className="text-lg px-8 py-3 border-2 hover:bg-blue-50 dark:hover:bg-gray-800"
             >
               Join as Doctor
@@ -192,7 +187,7 @@ const Index = () => {
             <Button 
               size="lg" 
               variant="secondary"
-              onClick={() => handleSignup('doctor')}
+              onClick={handleSignup}
               className="text-lg px-8 py-3 bg-white text-blue-600 hover:bg-gray-100"
             >
               Join as Doctor
@@ -256,17 +251,6 @@ const Index = () => {
         </div>
       </footer>
 
-      {/* Modals */}
-      <LoginModal 
-        open={showLogin} 
-        onOpenChange={setShowLogin}
-        userType={userType}
-      />
-      <SignupModal 
-        open={showSignup} 
-        onOpenChange={setShowSignup}
-        userType={userType}
-      />
     </div>
   );
 };

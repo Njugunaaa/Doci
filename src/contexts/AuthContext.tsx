@@ -41,7 +41,119 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, userData: any) => {
-    const redirectUrl = `${window.location.origin}/`;
+    try {
+      console.log('Starting signup process...', { email, userData });
+      
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: userData
+        }
+      });
+      
+      console.log('Supabase signup response:', { data, error });
+      
+      if (error) {
+        console.error('Supabase signup error:', error);
+        return { error };
+      }
+      
+      // If signup successful, try to create/update profile
+      if (data.user) {
+        console.log('User created successfully:', data.user.id);
+        
+        // Wait a moment for the trigger to create the profile
+        setTimeout(async () => {
+          try {
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .upsert({
+                id: data.user.id,
+                email: data.user.email,
+                full_name: userData.full_name || userData.fullName,
+                user_type: userData.user_type || userData.userType || 'patient'
+              });
+            
+            if (profileError) {
+              console.error('Profile creation error:', profileError);
+            } else {
+              console.log('Profile created/updated successfully');
+            }
+          } catch (profileErr) {
+            console.error('Profile creation exception:', profileErr);
+          }
+        }, 1000);
+      }
+      
+      return { data, error: null };
+    } catch (err) {
+      console.error('Signup exception:', err);
+      return { error: { message: 'Network error. Please check your connection and try again.' } };
+    }
+  };
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      console.log('Starting signin process...', { email });
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      console.log('Supabase signin response:', { data, error });
+      
+      if (error) {
+        console.error('Supabase signin error:', error);
+        return { error };
+      }
+      
+      return { data, error: null };
+    } catch (err) {
+      console.error('Signin exception:', err);
+      return { error: { message: 'Network error. Please check your connection and try again.' } };
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      console.log('Starting signout process...');
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Signout error:', error);
+      } else {
+        console.log('Signout successful');
+      }
+    } catch (err) {
+      console.error('Signout exception:', err);
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{
+      user,
+      session,
+      loading,
+      signUp,
+      signIn,
+      signOut
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
     
     const { error } = await supabase.auth.signUp({
       email,

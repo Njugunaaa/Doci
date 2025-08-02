@@ -27,9 +27,38 @@ import WeatherWidget from '@/components/shared/WeatherWidget';
 import EnhancedWeatherWidget from '@/components/shared/EnhancedWeatherWidget';
 import PharmacyShop from '@/components/patient/PharmacyShop';
 import CommunityGroups from '@/components/patient/CommunityGroups';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const PatientDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/login');
+    }
+  }, [user, loading, navigate]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Will redirect via useEffect
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
@@ -52,7 +81,9 @@ const PatientDashboard = () => {
                 <Crown className="w-3 h-3 mr-1" />
                 Upgrade to Doci's Plus
               </Badge>
-              <Button variant="outline" size="sm">Settings</Button>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                Sign Out
+              </Button>
             </div>
           </div>
         </div>
