@@ -19,7 +19,15 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { MedicalAI } from '@/lib/medicalAI';
+
+interface ConversationMessage {
+  id: number;
+  type: 'user' | 'bot';
+  message: string;
+  timestamp: string;
+  suggestions?: string[];
+  isTyping?: boolean;
+}
 
 export default function EnhancedSmartDocChat() {
   const [message, setMessage] = useState('');
@@ -182,8 +190,8 @@ export default function EnhancedSmartDocChat() {
     setConversations(prev => [...prev, typingMessage]);
 
     try {
-      // Get AI response from Hugging Face
-      const aiResponseText = await MedicalAI.getHealthAdvice(currentMessage);
+      // Simulate AI response (would be replaced with actual AI service)
+      const aiResponseText = await getSimulatedHealthAdvice(currentMessage);
       
       // Remove typing indicator and add real response
       setConversations(prev => prev.filter(conv => !conv.isTyping));
@@ -213,6 +221,29 @@ export default function EnhancedSmartDocChat() {
       setConversations(prev => [...prev, errorResponse]);
       toast.error('Failed to get AI response. Please try again.');
     }
+  };
+
+  // Simple AI simulation for health advice
+  const getSimulatedHealthAdvice = async (userMessage: string): Promise<string> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    const lowerMessage = userMessage.toLowerCase();
+    
+    if (lowerMessage.includes('headache') || lowerMessage.includes('head pain')) {
+      return '🩺 **Headache Analysis**\n\nHeadaches can have various causes including stress, dehydration, lack of sleep, or eye strain. Here are some recommendations:\n\n• **Immediate relief**: Rest in a quiet, dark room\n• **Hydration**: Drink plenty of water\n• **Pain relief**: Consider over-the-counter pain relievers (follow package instructions)\n• **Prevention**: Maintain regular sleep schedule, manage stress\n\n⚠️ **See a doctor if**: Severe sudden headache, fever, vision changes, or persistent symptoms.\n\n*This is AI-generated advice and not a substitute for professional medical consultation.*';
+    }
+    
+    if (lowerMessage.includes('fever') || lowerMessage.includes('temperature')) {
+      return '🌡️ **Fever Management**\n\nFever is often your body\'s natural response to infection. Here\'s what you should know:\n\n• **Normal response**: Fever helps fight infections\n• **Comfort measures**: Rest, fluids, light clothing\n• **Medication**: Acetaminophen or ibuprofen can help reduce fever\n• **Monitor**: Check temperature regularly\n\n🚨 **Seek immediate care if**: Temperature >103°F (39.4°C), difficulty breathing, severe symptoms, or concerning changes.\n\n*Always consult healthcare professionals for proper diagnosis and treatment.*';
+    }
+    
+    if (lowerMessage.includes('cough')) {
+      return '🫁 **Cough Assessment**\n\nCoughs can be dry or productive and may indicate various conditions:\n\n• **Hydration**: Drink warm liquids like tea with honey\n• **Humidity**: Use a humidifier or steam from hot shower\n• **Rest**: Avoid irritants like smoke\n• **Monitor**: Note if cough produces mucus or blood\n\n⚠️ **Contact a doctor if**: Cough persists >2 weeks, blood in mucus, difficulty breathing, or high fever.\n\n*This guidance is for general information only. Professional medical advice is recommended.*';
+    }
+    
+    // Default response for other queries
+    return `🤖 **Health Guidance**\n\nThank you for your question about "${userMessage}". While I can provide general health information, I recommend:\n\n• **Professional consultation**: Speak with a healthcare provider for personalized advice\n• **Reliable sources**: Use trusted medical websites for research\n• **Emergency care**: Call emergency services for urgent symptoms\n• **Preventive care**: Maintain regular check-ups with your doctor\n\n💡 **Helpful tips**: Stay hydrated, get adequate sleep, exercise regularly, and maintain a balanced diet.\n\n*This AI assistant provides general information only and cannot replace professional medical advice.*`;
   };
 
   const generateSuggestions = (userMessage: string): string[] => {
@@ -349,7 +380,7 @@ export default function EnhancedSmartDocChat() {
 
                 {conv.suggestions && (
                   <div className="flex flex-wrap gap-2 mt-3">
-                    {conv.suggestions.map((suggestion, idx) => (
+                    {conv.suggestions.map((suggestion: string, idx: number) => (
                       <Button 
                         key={idx} 
                         variant="outline" 
