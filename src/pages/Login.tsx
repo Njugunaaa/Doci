@@ -31,11 +31,30 @@ export default function Login() {
       
       if (error) {
         console.error('Login error:', error);
-        toast.error(error.message || 'Failed to sign in');
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error('Invalid email or password. Please check your credentials.');
+        } else if (error.message.includes('Email not confirmed')) {
+          toast.error('Please check your email and confirm your account before signing in.');
+        } else {
+          toast.error(error.message || 'Failed to sign in');
+        }
       } else {
         toast.success('Successfully signed in!');
         // Navigate to dashboard
-        navigate('/patient-dashboard');
+        // Check user type from profile to redirect appropriately
+        setTimeout(async () => {
+          try {
+            const { data: profile } = await supabase.from('profiles').select('user_type').eq('id', data.user?.id).single();
+            if (profile?.user_type === 'doctor') {
+              navigate('/doctor-dashboard');
+            } else {
+              navigate('/patient-dashboard');
+            }
+          } catch (err) {
+            console.error('Error fetching profile:', err);
+            navigate('/patient-dashboard'); // Default fallback
+          }
+        }, 1000);
       }
     } catch (error) {
       console.error('Unexpected login error:', error);
@@ -55,7 +74,7 @@ export default function Login() {
             Back to Home
           </Link>
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-red-600 rounded-lg flex items-center justify-center">
               <Heart className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold text-gray-900">Doci's</span>
@@ -117,7 +136,7 @@ export default function Login() {
               
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                className="w-full bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700"
                 disabled={loading}
               >
                 {loading ? 'Signing in...' : 'Sign In'}

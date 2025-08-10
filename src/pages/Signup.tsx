@@ -4,14 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, Mail, Lock, User, Stethoscope, Heart, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Stethoscope, Heart, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import HealthQuestionnaire from '@/components/auth/HealthQuestionnaire';
+import { Badge } from "@/components/ui/badge";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [userType, setUserType] = useState<'patient' | 'doctor'>('patient');
   const [formData, setFormData] = useState({
     fullName: '',
@@ -19,39 +21,66 @@ export default function Signup() {
     password: '',
     confirmPassword: '',
     specialization: '',
-    licenseNumber: ''
+    licenseNumber: '',
+    bio: '',
+    yearsExperience: '',
+    consultationFee: ''
   });
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const { signUp } = useAuth();
   const navigate = useNavigate();
 
+  const calculatePasswordStrength = (password: string) => {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    return strength;
+  };
+
+  const validateForm = () => {
+    const errors: string[] = [];
+    
+    if (!formData.fullName.trim()) errors.push('Full name is required');
+    if (!formData.email.trim()) errors.push('Email is required');
+    if (!/\S+@\S+\.\S+/.test(formData.email)) errors.push('Please enter a valid email');
+    if (!formData.password) errors.push('Password is required');
+    if (formData.password.length < 8) errors.push('Password must be at least 8 characters');
+    if (formData.password !== formData.confirmPassword) errors.push('Passwords do not match');
+    
+    if (userType === 'doctor') {
+      if (!formData.specialization.trim()) errors.push('Specialization is required');
+      if (!formData.licenseNumber.trim()) errors.push('License number is required');
+    }
+    
+    setValidationErrors(errors);
+    return errors.length === 0;
+  };
+
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    if (field === 'password') {
+      setPasswordStrength(calculatePasswordStrength(value));
+    }
+    
+    // Clear validation errors when user starts typing
+    if (validationErrors.length > 0) {
+      setValidationErrors([]);
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation
-    if (!formData.fullName || !formData.email || !formData.password) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-    
-    if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      return;
-    }
-
-    if (userType === 'doctor' && (!formData.specialization || !formData.licenseNumber)) {
-      toast.error('Please fill in all doctor-specific fields');
+    if (!validateForm()) {
+      toast.error('Please fix the validation errors');
       return;
     }
     
@@ -63,6 +92,7 @@ export default function Signup() {
         fullName: formData.fullName,
         user_type: userType,
         userType: userType,
+        email: formData.email
       };
 
       console.log('Attempting to sign up with:', { email: formData.email, userData });
@@ -78,35 +108,36 @@ export default function Signup() {
       console.log('Signup successful:', data);
       
       // If doctor, create doctor profile
-      if (userType === 'doctor') {
-        try {
-          // Wait a moment for the user to be created
-          setTimeout(async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-              const { error: doctorError } = await supabase
-                .from('doctors')
-                .insert({
-                  id: user.id,
-                  specialization: formData.specialization,
-                  license_number: formData.licenseNumber,
-                  verification_status: 'pending'
-                });
-              
-              if (doctorError) {
-                console.error('Error creating doctor profile:', doctorError);
-                toast.error('Account created but failed to save doctor details');
-              } else {
-                console.log('Doctor profile created successfully');
-              }
+      if (userType === 'doctor' && data.user) {
+        setTimeout(async () => {
+          try {
+            const { error: doctorError } = await supabase
+              .from('doctors')
+              .insert({
+                id: data.user.id,
+                specialization: formData.specialization,
+                license_number: formData.licenseNumber,
+                bio: formData.bio || null,
+                years_experience: formData.yearsExperience ? parseInt(formData.yearsExperience) : null,
+                consultation_fee: formData.consultationFee ? parseFloat(formData.consultationFee) : null,
+                verification_status: 'pending',
+                is_verified: false
+              });
+            
+            if (doctorError) {
+              console.error('Error creating doctor profile:', doctorError);
+              toast.error('Account created but failed to save doctor details');
+            } else {
+              console.log('Doctor profile created successfully');
+              toast.success('Doctor profile created! Verification pending.');
             }
-          }, 2000);
-          
-          setStep(2); // Move to verification step for doctors
-        } catch (doctorError) {
-          console.error('Doctor profile creation error:', doctorError);
-          toast.error('Account created but failed to save doctor details');
-        }
+          } catch (doctorError) {
+            console.error('Doctor profile creation error:', doctorError);
+            toast.error('Account created but failed to save doctor details');
+          }
+        }, 2000);
+        
+        setStep(2); // Move to verification step for doctors
       } else {
         toast.success('Account created successfully! Please check your email to verify your account.');
         // Show health questionnaire for patients
@@ -132,9 +163,25 @@ export default function Signup() {
     navigate('/patient-dashboard');
   };
 
+  const getPasswordStrengthColor = () => {
+    if (passwordStrength <= 1) return 'bg-red-500';
+    if (passwordStrength <= 2) return 'bg-orange-500';
+    if (passwordStrength <= 3) return 'bg-yellow-500';
+    if (passwordStrength <= 4) return 'bg-blue-500';
+    return 'bg-green-500';
+  };
+
+  const getPasswordStrengthText = () => {
+    if (passwordStrength <= 1) return 'Very Weak';
+    if (passwordStrength <= 2) return 'Weak';
+    if (passwordStrength <= 3) return 'Fair';
+    if (passwordStrength <= 4) return 'Good';
+    return 'Strong';
+  };
+
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-red-50 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           {/* Header */}
           <div className="text-center mb-8">
@@ -143,7 +190,7 @@ export default function Signup() {
               Back to Home
             </Link>
             <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-red-600 rounded-lg flex items-center justify-center">
                 <Heart className="w-6 h-6 text-white" />
               </div>
               <span className="text-2xl font-bold text-gray-900">Doci's</span>
@@ -162,7 +209,7 @@ export default function Signup() {
                   </>
                 ) : (
                   <>
-                    <Heart className="w-6 h-6 text-green-600" />
+                    <Heart className="w-6 h-6 text-red-600" />
                     Patient Registration
                   </>
                 )}
@@ -172,16 +219,31 @@ export default function Signup() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {/* Validation Errors */}
+              {validationErrors.length > 0 && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertCircle className="w-4 h-4 text-red-600" />
+                    <span className="text-sm font-medium text-red-800">Please fix the following errors:</span>
+                  </div>
+                  <ul className="text-xs text-red-700 space-y-1">
+                    {validationErrors.map((error, idx) => (
+                      <li key={idx}>• {error}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* User Type Selection */}
               <div className="flex gap-2 mb-6">
                 <Button
                   type="button"
                   variant={userType === 'patient' ? 'default' : 'outline'}
                   onClick={() => setUserType('patient')}
-                  className="flex-1"
+                  className={`flex-1 ${userType === 'patient' ? 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800' : ''}`}
                   disabled={loading}
                 >
-                  <Heart className="w-4 h-4 mr-2" />
+                  <Heart className="w-4 h-4 mr-2 text-red-500" />
                   Patient
                 </Button>
                 <Button
@@ -259,6 +321,47 @@ export default function Signup() {
                           disabled={loading}
                         />
                       </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="bio">Bio (Optional)</Label>
+                        <Input
+                          id="bio"
+                          type="text"
+                          placeholder="Brief description about yourself"
+                          value={formData.bio}
+                          onChange={(e) => handleInputChange('bio', e.target.value)}
+                          disabled={loading}
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="yearsExperience">Years of Experience</Label>
+                          <Input
+                            id="yearsExperience"
+                            type="number"
+                            placeholder="e.g., 5"
+                            value={formData.yearsExperience}
+                            onChange={(e) => handleInputChange('yearsExperience', e.target.value)}
+                            disabled={loading}
+                            min="0"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="consultationFee">Consultation Fee ($)</Label>
+                          <Input
+                            id="consultationFee"
+                            type="number"
+                            placeholder="e.g., 150"
+                            value={formData.consultationFee}
+                            onChange={(e) => handleInputChange('consultationFee', e.target.value)}
+                            disabled={loading}
+                            min="0"
+                            step="0.01"
+                          />
+                        </div>
+                      </div>
                     </>
                   )}
                   
@@ -269,12 +372,12 @@ export default function Signup() {
                       <Input
                         id="password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="Create a password (min 6 characters)"
+                        placeholder="Create a password (min 8 characters)"
                         value={formData.password}
                         onChange={(e) => handleInputChange('password', e.target.value)}
                         className="pl-10 pr-10"
                         required
-                        minLength={6}
+                        minLength={8}
                         disabled={loading}
                       />
                       <button
@@ -286,6 +389,30 @@ export default function Signup() {
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                     </div>
+                    
+                    {/* Password Strength Indicator */}
+                    {formData.password && (
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-600">Password Strength:</span>
+                          <span className={`text-xs font-medium ${
+                            passwordStrength <= 2 ? 'text-red-600' : 
+                            passwordStrength <= 3 ? 'text-yellow-600' : 'text-green-600'
+                          }`}>
+                            {getPasswordStrengthText()}
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full transition-all duration-300 ${getPasswordStrengthColor()}`}
+                            style={{ width: `${(passwordStrength / 5) * 100}%` }}
+                          ></div>
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Include: uppercase, lowercase, numbers, and special characters
+                        </div>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="space-y-2">
@@ -294,20 +421,45 @@ export default function Signup() {
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
                         id="confirmPassword"
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         placeholder="Confirm your password"
                         value={formData.confirmPassword}
                         onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                        className="pl-10"
+                        className="pl-10 pr-10"
                         required
                         disabled={loading}
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                        disabled={loading}
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
                     </div>
+                    
+                    {/* Password Match Indicator */}
+                    {formData.confirmPassword && (
+                      <div className="flex items-center gap-2 text-xs">
+                        {formData.password === formData.confirmPassword ? (
+                          <>
+                            <CheckCircle className="w-3 h-3 text-green-600" />
+                            <span className="text-green-600">Passwords match</span>
+                          </>
+                        ) : (
+                          <>
+                            <AlertCircle className="w-3 h-3 text-red-600" />
+                            <span className="text-red-600">Passwords don't match</span>
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                    className="w-full bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700"
                     disabled={loading}
                   >
                     {loading ? 'Creating Account...' : 'Create Account'}
@@ -336,7 +488,7 @@ export default function Signup() {
                   
                   <Button 
                     onClick={handleVerificationUpload}
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                    className="w-full bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700"
                   >
                     Submit for Verification
                   </Button>
