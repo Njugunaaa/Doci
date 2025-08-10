@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Brain, Mic, MicOff, Send, User, Bot, Heart, Stethoscope } from 'lucide-react';
+import { MedicalAI } from '@/lib/medicalAI';
+import { toast } from 'sonner';
 
 export default function SmartDocChat() {
   const [message, setMessage] = useState('');
@@ -36,18 +38,34 @@ export default function SmartDocChat() {
     };
 
     setConversations(prev => [...prev, newMessage]);
+    const currentMessage = message;
     setMessage('');
 
-    // Simulate AI response
-    setTimeout(() => {
+    // Get real AI response
+    setTimeout(async () => {
+      try {
+        const aiResponseText = await MedicalAI.getHealthAdvice(currentMessage);
+        
       const aiResponse = {
         id: conversations.length + 2,
         type: 'bot' as const,
-        message: 'Based on your symptoms, here are some recommendations:\n\n🏥 **Immediate care**: Ensure adequate rest and hydration\n💊 **Relief**: Consider over-the-counter pain relievers if needed\n⚠️ **Warning signs**: Seek immediate medical attention if you experience severe headaches, vision changes, or persistent high fever\n\nWould you like me to suggest some doctors in your area?',
+          message: aiResponseText,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         suggestions: ['Find doctors', 'Diet recommendations', 'Exercise tips']
       };
       setConversations(prev => [...prev, aiResponse]);
+      } catch (error) {
+        console.error('Error getting AI response:', error);
+        const errorResponse = {
+          id: conversations.length + 2,
+          type: 'bot' as const,
+          message: 'I apologize, but I\'m having trouble processing your request right now. Please try again in a moment.\n\n⚠ This is AI-generated advice and is not a substitute for professional medical consultation.',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          suggestions: ['Try again', 'Find a doctor', 'Emergency contacts']
+        };
+        setConversations(prev => [...prev, errorResponse]);
+        toast.error('Failed to get AI response. Please try again.');
+      }
     }, 2000);
   };
 

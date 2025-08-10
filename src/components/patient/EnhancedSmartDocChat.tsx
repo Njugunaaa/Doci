@@ -19,6 +19,7 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { MedicalAI } from '@/lib/medicalAI';
 
 export default function EnhancedSmartDocChat() {
   const [message, setMessage] = useState('');
@@ -27,11 +28,11 @@ export default function EnhancedSmartDocChat() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [showSearch, setShowSearch] = useState(false);
-  const [conversations, setConversations] = useState([
+  const [conversations, setConversations] = useState<ConversationMessage[]>([
     {
       id: 1,
       type: 'bot',
-      message: 'Hello! I\'m Smart Doci, your AI health assistant. I can help you with:\n\n🔍 **Symptom Analysis** - Describe your symptoms\n💊 **Medication Info** - Ask about medications\n🏥 **Doctor Connections** - Find specialists\n📋 **Health Tips** - Get personalized advice\n\nHow can I help you today?',
+      message: 'Hello! I\'m Smart Doci, your AI health assistant powered by advanced medical AI. I can help you with:\n\n🔍 **Symptom Analysis** - Describe your symptoms for personalized guidance\n💊 **Medication Info** - Ask about medications and treatments\n🏥 **Doctor Connections** - Find specialists in your area\n📋 **Health Tips** - Get evidence-based health advice\n\nHow can I help you today?',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       suggestions: ['I have a headache', 'Check my symptoms', 'Find a doctor', 'Medication side effects']
     }
@@ -169,55 +170,74 @@ export default function EnhancedSmartDocChat() {
     setMessage('');
     setShowSearch(false);
 
-    // Simulate AI processing
-    setTimeout(() => {
-      const aiResponse = generateAIResponse(currentMessage);
-      setConversations(prev => [...prev, aiResponse]);
-    }, 1500);
-  };
-
-  const generateAIResponse = (userMessage: string) => {
-    const lowerMessage = userMessage.toLowerCase();
-    let response = '';
-    let suggestions: string[] = [];
-
-    // Symptom analysis
-    if (lowerMessage.includes('headache') || lowerMessage.includes('head pain')) {
-      response = `I understand you're experiencing headaches. Let me help you analyze this:\n\n**Possible causes:**\n• Tension or stress\n• Dehydration\n• Eye strain\n• Sinus congestion\n• Lack of sleep\n\n**Immediate relief:**\n• Rest in a quiet, dark room\n• Apply cold or warm compress\n• Stay hydrated\n• Gentle neck/shoulder massage\n\n⚠️ **Seek immediate care if you experience:**\n• Sudden severe headache\n• Headache with fever and stiff neck\n• Vision changes\n• Confusion or difficulty speaking\n\nWould you like me to connect you with a neurologist or general practitioner?`;
-      suggestions = ['Find a neurologist', 'Home remedies', 'When to see a doctor', 'Track symptoms'];
-    }
-    else if (lowerMessage.includes('fever') || lowerMessage.includes('temperature')) {
-      response = `Fever can indicate your body is fighting an infection. Here's what you should know:\n\n**Normal actions:**\n• Rest and stay hydrated\n• Monitor temperature regularly\n• Take fever reducers if needed (acetaminophen/ibuprofen)\n\n**Seek medical attention if:**\n• Temperature above 103°F (39.4°C)\n• Fever lasts more than 3 days\n• Difficulty breathing\n• Severe headache or stiff neck\n• Persistent vomiting\n\n**For children:** Lower thresholds apply. Contact pediatrician for guidance.\n\nWould you like me to help you find a doctor or provide more specific guidance?`;
-      suggestions = ['Find a doctor', 'Fever in children', 'Home care tips', 'Emergency signs'];
-    }
-    else if (lowerMessage.includes('cough')) {
-      response = `Coughs can have various causes. Let me help you understand:\n\n**Types of cough:**\n• **Dry cough:** Often from irritation or viral infection\n• **Productive cough:** With mucus, may indicate bacterial infection\n\n**Home remedies:**\n• Honey and warm water\n• Stay hydrated\n• Use humidifier\n• Avoid irritants\n\n**See a doctor if:**\n• Cough persists >3 weeks\n• Blood in mucus\n• High fever\n• Difficulty breathing\n• Chest pain\n\nWould you like me to connect you with a pulmonologist or general practitioner?`;
-      suggestions = ['Find a lung specialist', 'Cough remedies', 'Is it serious?', 'Medication options'];
-    }
-    else if (lowerMessage.includes('chest pain') || lowerMessage.includes('heart')) {
-      response = `⚠️ **IMPORTANT:** Chest pain can be serious and requires immediate attention.\n\n**Seek emergency care immediately if you have:**\n• Crushing chest pain\n• Pain radiating to arm, jaw, or back\n• Shortness of breath\n• Sweating or nausea\n• Dizziness or fainting\n\n**Other causes of chest pain:**\n• Muscle strain\n• Acid reflux\n• Anxiety\n• Respiratory infections\n\n**Do not delay:** If you're unsure, it's always better to seek immediate medical attention.\n\n🚨 **Call emergency services if symptoms are severe!**`;
-      suggestions = ['Call emergency', 'Find cardiologist', 'Anxiety vs heart', 'Immediate steps'];
-    }
-    else if (lowerMessage.includes('find') && lowerMessage.includes('doctor')) {
-      response = `I can help you find the right healthcare professional! Here are some options:\n\n**Available specialists:**\n🩺 General Practitioners\n❤️ Cardiologists\n🧠 Neurologists\n🫁 Pulmonologists\n🦴 Orthopedists\n👁️ Ophthalmologists\n🩸 Hematologists\n\n**What I need to know:**\n• Your location or preferred area\n• Type of specialist needed\n• Insurance preferences\n• Urgency level\n\nTell me more about what kind of doctor you're looking for!`;
-      suggestions = ['General practitioner', 'Specialist needed', 'Emergency care', 'Telemedicine options'];
-    }
-    else if (lowerMessage.includes('medication') || lowerMessage.includes('medicine')) {
-      response = `I can provide general information about medications, but always consult your doctor or pharmacist for specific advice.\n\n**What I can help with:**\n• General medication information\n• Common side effects\n• Drug interactions (basic)\n• When to take medications\n\n**Important reminders:**\n• Never stop prescribed medications without consulting your doctor\n• Always read medication labels\n• Report side effects to your healthcare provider\n• Keep medications in original containers\n\nWhat specific medication information do you need?`;
-      suggestions = ['Drug interactions', 'Side effects', 'Dosage questions', 'Generic vs brand'];
-    }
-    else {
-      response = `I'm here to help with your health questions! I can assist with:\n\n🔍 **Symptom analysis** - Describe what you're experiencing\n💊 **Medication information** - Ask about drugs and treatments\n🏥 **Doctor referrals** - Find the right specialist\n📋 **Health guidance** - Get personalized advice\n🚨 **Emergency guidance** - Know when to seek immediate care\n\nPlease describe your symptoms or health concerns in detail, and I'll provide the best guidance possible.\n\n*Remember: I provide information and guidance, but always consult healthcare professionals for diagnosis and treatment.*`;
-      suggestions = ['Describe symptoms', 'Find a doctor', 'Medication help', 'Health tips'];
-    }
-
-    return {
+    // Show typing indicator
+    const typingMessage = {
       id: conversations.length + 2,
       type: 'bot' as const,
-      message: response,
+      message: '🤔 Analyzing your question...',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      suggestions: suggestions
+      isTyping: true
     };
+    
+    setConversations(prev => [...prev, typingMessage]);
+
+    try {
+      // Get AI response from Hugging Face
+      const aiResponseText = await MedicalAI.getHealthAdvice(currentMessage);
+      
+      // Remove typing indicator and add real response
+      setConversations(prev => prev.filter(conv => !conv.isTyping));
+      
+      const aiResponse = {
+        id: conversations.length + 3,
+        type: 'bot' as const,
+        message: aiResponseText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        suggestions: generateSuggestions(currentMessage)
+      };
+      setConversations(prev => [...prev, aiResponse]);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      
+      // Remove typing indicator and show error message
+      setConversations(prev => prev.filter(conv => !conv.isTyping));
+      
+      const errorResponse = {
+        id: conversations.length + 3,
+        type: 'bot' as const,
+        message: 'I apologize, but I\'m having trouble processing your request right now. Please try again in a moment, or consider speaking with a healthcare professional if your concern is urgent.\n\n⚠ This is AI-generated advice and is not a substitute for professional medical consultation.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        suggestions: ['Try again', 'Find a doctor', 'Emergency contacts']
+      };
+      
+      setConversations(prev => [...prev, errorResponse]);
+      toast.error('Failed to get AI response. Please try again.');
+    }
+  };
+
+  const generateSuggestions = (userMessage: string): string[] => {
+    const lowerMessage = userMessage.toLowerCase();
+
+    if (lowerMessage.includes('headache') || lowerMessage.includes('head pain')) {
+      return ['Find a neurologist', 'Home remedies', 'When to see a doctor', 'Track symptoms'];
+    }
+    if (lowerMessage.includes('fever') || lowerMessage.includes('temperature')) {
+      return ['Find a doctor', 'Fever in children', 'Home care tips', 'Emergency signs'];
+    }
+    if (lowerMessage.includes('cough')) {
+      return ['Find a lung specialist', 'Cough remedies', 'Is it serious?', 'Medication options'];
+    }
+    if (lowerMessage.includes('chest pain') || lowerMessage.includes('heart')) {
+      return ['Call emergency', 'Find cardiologist', 'Anxiety vs heart', 'Immediate steps'];
+    }
+    if (lowerMessage.includes('find') && lowerMessage.includes('doctor')) {
+      return ['General practitioner', 'Specialist needed', 'Emergency care', 'Telemedicine options'];
+    }
+    if (lowerMessage.includes('medication') || lowerMessage.includes('medicine')) {
+      return ['Drug interactions', 'Side effects', 'Dosage questions', 'Generic vs brand'];
+    }
+
+    return ['Describe symptoms', 'Find a doctor', 'Medication help', 'Health tips'];
   };
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -294,13 +314,15 @@ export default function EnhancedSmartDocChat() {
           {conversations.map((conv) => (
             <div key={conv.id} className={`flex gap-3 ${conv.type === 'user' ? 'justify-end' : 'justify-start'}`}>
               {conv.type === 'bot' && (
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-5 h-5 text-white" />
+                <div className={`w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  conv.isTyping ? 'animate-pulse' : ''
+                }`}>
+                  <Bot className={`w-5 h-5 text-white ${conv.isTyping ? 'animate-bounce' : ''}`} />
                 </div>
               )}
               
               <div className={`max-w-[75%] ${conv.type === 'user' ? 'order-2' : ''}`}>
-                <div className={`p-4 rounded-2xl shadow-sm ${
+                <div className={`p-4 rounded-2xl shadow-sm ${conv.isTyping ? 'animate-pulse' : ''} ${
                   conv.type === 'user' 
                     ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white ml-auto' 
                     : 'bg-white border border-gray-200 text-gray-900'
@@ -455,4 +477,5 @@ export default function EnhancedSmartDocChat() {
       </div>
     </div>
   );
+  isTyping?: boolean;
 }

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Eye, EyeOff, Mail, Lock, Heart, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -44,7 +45,13 @@ export default function Login() {
         // Check user type from profile to redirect appropriately
         setTimeout(async () => {
           try {
-            const { data: profile } = await supabase.from('profiles').select('user_type').eq('id', data.user?.id).single();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+              navigate('/patient-dashboard');
+              return;
+            }
+            
+            const { data: profile } = await supabase.from('profiles').select('user_type').eq('id', user.id).single();
             if (profile?.user_type === 'doctor') {
               navigate('/doctor-dashboard');
             } else {

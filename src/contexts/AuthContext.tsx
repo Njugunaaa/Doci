@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { User, Session, AuthError } from '@supabase/supabase-js';
-import { toast } from 'sonner';
 
 interface AuthContextType {
   user: User | null;
@@ -128,16 +127,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('Signin error:', error);
-        toast.error(error.message);
         return { error, data: null };
       }
 
       console.log('Signin successful:', data);
-      toast.success('Successfully signed in!');
       return { error: null, data };
     } catch (error) {
       console.error('Unexpected signin error:', error);
-      toast.error('An unexpected error occurred during signin');
       return { 
         error: { 
           message: 'An unexpected error occurred during signin',
@@ -158,16 +154,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (error) {
         console.error('Signout error:', error);
-        toast.error('Error signing out');
         return { error };
       }
 
       console.log('Signout successful');
-      toast.success('Successfully signed out');
       return { error: null };
     } catch (error) {
       console.error('Unexpected signout error:', error);
-      toast.error('An unexpected error occurred during signout');
       return { 
         error: { 
           message: 'An unexpected error occurred during signout',
