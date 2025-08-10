@@ -6,11 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, Shield, Users, Zap, Stethoscope, Brain, Activity, Apple } from 'lucide-react';
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 
 const Index = () => {
   const { user, loading, signOut } = useAuth();
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   // Redirect authenticated users
   useEffect(() => {
@@ -21,11 +21,11 @@ const Index = () => {
   }, [user, loading]);
 
   const handleLogin = () => {
-    navigate('/login');
+    setLocation('/login');
   };
 
   const handleSignup = () => {
-    navigate('/signup');
+    setLocation('/signup');
   };
 
   const handleSignOut = async () => {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Eye, EyeOff, Mail, Lock, User, Stethoscope, Heart, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+
 import HealthQuestionnaire from '@/components/auth/HealthQuestionnaire';
 import { Badge } from "@/components/ui/badge";
 
@@ -32,7 +32,7 @@ export default function Signup() {
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const { signUp } = useAuth();
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   const calculatePasswordStrength = (password: string) => {
     let strength = 0;
@@ -109,37 +109,35 @@ export default function Signup() {
       
       // If doctor, create doctor profile
       if (userType === 'doctor' && data.user) {
-        setTimeout(async () => {
-          try {
-            const { error: doctorError } = await supabase
-              .from('doctors')
-              .insert({
-                id: data.user.id,
-                specialization: formData.specialization,
-                license_number: formData.licenseNumber,
-                bio: formData.bio || null,
-                years_experience: formData.yearsExperience ? parseInt(formData.yearsExperience) : null,
-                consultation_fee: formData.consultationFee ? parseFloat(formData.consultationFee) : null,
-                verification_status: 'pending',
-                is_verified: false
-              });
-            
-            if (doctorError) {
-              console.error('Error creating doctor profile:', doctorError);
-              toast.error('Account created but failed to save doctor details');
-            } else {
-              console.log('Doctor profile created successfully');
-              toast.success('Doctor profile created! Verification pending.');
-            }
-          } catch (doctorError) {
-            console.error('Doctor profile creation error:', doctorError);
-            toast.error('Account created but failed to save doctor details');
+        try {
+          const response = await fetch('/api/doctors', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+            },
+            body: JSON.stringify({
+              id: data.user.id,
+              specialization: formData.specialization,
+              licenseNumber: formData.licenseNumber,
+              bio: formData.bio || null,
+              yearsExperience: formData.yearsExperience ? parseInt(formData.yearsExperience) : null,
+              consultationFee: formData.consultationFee ? parseFloat(formData.consultationFee) : null,
+            }),
+          });
+
+          if (response.ok) {
+            toast.success('Doctor profile created! Verification pending.');
+            setStep(2); // Move to verification step for doctors
+          } else {
+            throw new Error('Failed to create doctor profile');
           }
-        }, 2000);
-        
-        setStep(2); // Move to verification step for doctors
+        } catch (doctorError) {
+          console.error('Doctor profile creation error:', doctorError);
+          toast.error('Account created but failed to save doctor details');
+        }
       } else {
-        toast.success('Account created successfully! Please check your email to verify your account.');
+        toast.success('Account created successfully!');
         // Show health questionnaire for patients
         setShowQuestionnaire(true);
       }
@@ -153,14 +151,14 @@ export default function Signup() {
 
   const handleVerificationUpload = () => {
     toast.success('Verification documents submitted! You will receive an email once your account is approved.');
-    navigate('/login');
+    setLocation('/login');
   };
 
   const handleQuestionnaireComplete = (healthData: any) => {
     console.log('Health questionnaire completed:', healthData);
     setShowQuestionnaire(false);
     toast.success('Welcome to Doci\'s! Your health profile has been created.');
-    navigate('/patient-dashboard');
+    setLocation('/patient-dashboard');
   };
 
   const getPasswordStrengthColor = () => {

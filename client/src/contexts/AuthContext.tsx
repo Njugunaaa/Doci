@@ -1,198 +1,101 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import type { User, Session, AuthError } from '@supabase/supabase-js';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { apiRequest } from '@/lib/queryClient';
+
+interface User {
+  id: number;
+  email: string;
+  fullName?: string;
+  userType: string;
+}
 
 interface AuthContextType {
   user: User | null;
-  session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, userData?: any) => Promise<{ error: AuthError | null; data: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: AuthError | null; data: any }>;
-  signOut: () => Promise<{ error: AuthError | null }>;
+  signUp: (email: string, password: string, userData: any) => Promise<{ error?: any; data?: any }>;
+  signIn: (email: string, password: string) => Promise<{ error?: any }>;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    const getInitialSession = async () => {
+    // Check if user is logged in on app start
+    const token = localStorage.getItem('auth_token');
+    const userData = localStorage.getItem('user_data');
+    
+    if (token && userData) {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error('Error getting session:', error);
-        } else {
-          setSession(session);
-          setUser(session?.user ?? null);
-        }
+        setUser(JSON.parse(userData));
       } catch (error) {
-        console.error('Unexpected error getting session:', error);
-      } finally {
-        setLoading(false);
+        console.error('Error parsing user data:', error);
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_data');
       }
-    };
-
-    getInitialSession();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email);
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
+    }
+    
+    setLoading(false);
   }, []);
 
-  const signUp = async (email: string, password: string, userData?: any) => {
+  const signUp = async (email: string, password: string, userData: any) => {
     try {
-      setLoading(true);
-      
-      console.log('Signing up with data:', { email, userData });
-      
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: userData?.full_name || userData?.fullName || '',
-            user_type: userData?.user_type || userData?.userType || 'patient',
-            ...userData
-          }
-        }
+      const response = await apiRequest('/api/auth/signup', {
+        method: 'POST',
+        body: JSON.stringify({
+          email,
+          password,
+          fullName: userData.fullName || userData.full_name,
+          userType: userData.userType || userData.user_type,
+        }),
       });
 
-      if (error) {
-        console.error('Signup error:', error);
-        return { error, data: null };
-      }
+      localStorage.setItem('auth_token', response.token);
+      localStorage.setItem('user_data', JSON.stringify(response.user));
+      setUser(response.user);
 
-      console.log('Signup successful:', data);
-      
-      // Wait a moment for the trigger to create the profile
-      if (data.user) {
-        setTimeout(async () => {
-          try {
-            const { data: profile, error: profileError } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', data.user.id)
-              .single();
-            
-            if (profileError) {
-              console.error('Profile creation error:', profileError);
-            } else {
-              console.log('Profile created successfully:', profile);
-            }
-          } catch (err) {
-            console.error('Error checking profile:', err);
-          }
-        }, 2000);
-      }
-      
-      return { error: null, data };
-    } catch (error) {
-      console.error('Unexpected signup error:', error);
-      return { 
-        error: { 
-          message: 'An unexpected error occurred during signup',
-          name: 'UnexpectedError',
-          status: 500
-        } as AuthError, 
-        data: null 
-      };
-    } finally {
-      setLoading(false);
+      return { data: response };
+    } catch (error: any) {
+      return { error: { message: error.message } };
     }
   };
 
   const signIn = async (email: string, password: string) => {
     try {
-      setLoading(true);
-      console.log('Attempting to sign in:', email);
-      
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
+      const response = await apiRequest('/api/auth/signin', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) {
-        console.error('Signin error:', error);
-        return { error, data: null };
-      }
+      localStorage.setItem('auth_token', response.token);
+      localStorage.setItem('user_data', JSON.stringify(response.user));
+      setUser(response.user);
 
-      console.log('Signin successful:', data);
-      return { error: null, data };
-    } catch (error) {
-      console.error('Unexpected signin error:', error);
-      return { 
-        error: { 
-          message: 'An unexpected error occurred during signin',
-          name: 'UnexpectedError',
-          status: 500
-        } as AuthError, 
-        data: null 
-      };
-    } finally {
-      setLoading(false);
+      return {};
+    } catch (error: any) {
+      return { error: { message: error.message } };
     }
   };
 
   const signOut = async () => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error('Signout error:', error);
-        return { error };
-      }
-
-      console.log('Signout successful');
-      return { error: null };
-    } catch (error) {
-      console.error('Unexpected signout error:', error);
-      return { 
-        error: { 
-          message: 'An unexpected error occurred during signout',
-          name: 'UnexpectedError',
-          status: 500
-        } as AuthError
-      };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const value = {
-    user,
-    session,
-    loading,
-    signUp,
-    signIn,
-    signOut
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_data');
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}
+};

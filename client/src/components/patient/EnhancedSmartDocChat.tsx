@@ -477,5 +477,4 @@ export default function EnhancedSmartDocChat() {
       </div>
     </div>
   );
-  isTyping?: boolean;
-}
+};

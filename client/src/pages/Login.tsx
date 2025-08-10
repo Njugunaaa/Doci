@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Eye, EyeOff, Mail, Lock, Heart, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +15,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,27 +41,10 @@ export default function Login() {
         }
       } else {
         toast.success('Successfully signed in!');
-        // Navigate to dashboard
-        // Check user type from profile to redirect appropriately
-        setTimeout(async () => {
-          try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-              navigate('/patient-dashboard');
-              return;
-            }
-            
-            const { data: profile } = await supabase.from('profiles').select('user_type').eq('id', user.id).single();
-            if (profile?.user_type === 'doctor') {
-              navigate('/doctor-dashboard');
-            } else {
-              navigate('/patient-dashboard');
-            }
-          } catch (err) {
-            console.error('Error fetching profile:', err);
-            navigate('/patient-dashboard'); // Default fallback
-          }
-        }, 1000);
+        // Navigate to appropriate dashboard
+        setTimeout(() => {
+          setLocation('/patient-dashboard'); // Default for now
+        }, 500);
       }
     } catch (error) {
       console.error('Unexpected login error:', error);

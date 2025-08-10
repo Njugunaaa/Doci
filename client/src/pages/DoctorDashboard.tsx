@@ -17,24 +17,24 @@ import {
 } from 'lucide-react';
 import DoctorPatientChat from '@/components/doctor/DoctorPatientChat';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 import { useEffect } from 'react';
 
 const DoctorDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const { user, loading, signOut } = useAuth();
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   // Redirect if not authenticated
   useEffect(() => {
     if (!loading && !user) {
-      navigate('/login');
+      setLocation('/login');
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, setLocation]);
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/');
+    setLocation('/');
   };
 
   if (loading) {
