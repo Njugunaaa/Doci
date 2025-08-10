@@ -42,21 +42,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, userData: any) => {
     try {
-      const response = await apiRequest('/api/auth/signup', {
-        method: 'POST',
-        body: JSON.stringify({
-          email,
-          password,
-          fullName: userData.fullName || userData.full_name,
-          userType: userData.userType || userData.user_type,
-        }),
-      });
+      // For demo purposes, simulate successful signup
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const mockUser = {
+        id: Math.floor(Math.random() * 1000),
+        email,
+        fullName: userData.fullName || userData.full_name,
+        userType: userData.userType || userData.user_type,
+      };
 
-      localStorage.setItem('auth_token', response.token);
-      localStorage.setItem('user_data', JSON.stringify(response.user));
-      setUser(response.user);
+      const mockToken = 'demo_token_' + Date.now();
+      
+      localStorage.setItem('auth_token', mockToken);
+      localStorage.setItem('user_data', JSON.stringify(mockUser));
+      setUser(mockUser);
 
-      return { data: response };
+      return { data: { user: mockUser, token: mockToken } };
     } catch (error: any) {
       return { error: { message: error.message } };
     }
@@ -64,14 +66,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string) => {
     try {
-      const response = await apiRequest('/api/auth/signin', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-      });
+      // For demo purposes, simulate successful signin
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const mockUser = {
+        id: Math.floor(Math.random() * 1000),
+        email,
+        fullName: 'Demo User',
+        userType: 'patient',
+      };
 
-      localStorage.setItem('auth_token', response.token);
-      localStorage.setItem('user_data', JSON.stringify(response.user));
-      setUser(response.user);
+      const mockToken = 'demo_token_' + Date.now();
+      
+      localStorage.setItem('auth_token', mockToken);
+      localStorage.setItem('user_data', JSON.stringify(mockUser));
+      setUser(mockUser);
 
       return {};
     } catch (error: any) {

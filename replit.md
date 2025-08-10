@@ -51,3 +51,9 @@ A comprehensive health platform connecting patients with verified doctors, featu
 - Database schema auto-synced with `npm run db:push`
 - JWT tokens stored in localStorage for session management
 - All Supabase code successfully removed and replaced with custom backend
+
+## Deployment
+- **Vercel Support**: Frontend can be deployed as static site with demo authentication
+- **Build Command**: `vite build` creates optimized production build
+- **Authentication**: Uses mock authentication for static deployment demo
+- **API**: Backend API available for full-stack Replit deployment

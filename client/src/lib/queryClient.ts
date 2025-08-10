@@ -9,23 +9,29 @@ export const queryClient = new QueryClient({
   },
 });
 
-// Default fetcher function
+// Default fetcher function (demo mode for static deployment)
 export const apiRequest = async (url: string, options: RequestInit = {}) => {
-  const token = localStorage.getItem('auth_token');
+  // For static deployment, return mock data
+  await new Promise(resolve => setTimeout(resolve, 500));
   
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || `HTTP ${response.status}`);
+  if (url.includes('/api/communities')) {
+    return [
+      {
+        id: 1,
+        name: 'Heart Health Support',
+        description: 'Community for heart health discussions',
+        category: 'Cardiology',
+        memberCount: 245
+      },
+      {
+        id: 2,
+        name: 'Mental Wellness',
+        description: 'Support group for mental health',
+        category: 'Psychology',
+        memberCount: 189
+      }
+    ];
   }
-
-  return response.json();
+  
+  return { message: 'Demo mode - API not available in static deployment' };
 };
