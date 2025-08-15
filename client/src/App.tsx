@@ -30,6 +30,7 @@ const App = () => (
               <Route path="/patient-dashboard" component={PatientDashboard} />
               <Route path="/doctor-dashboard" component={DoctorDashboard} />
               <Route path="/.admin" component={AdminDashboard} />
+              <Route path="/admin" component={AdminDashboard} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route component={NotFound} />
             </Switch>

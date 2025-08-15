@@ -34,6 +34,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'wouter';
 import { toast } from 'sonner';
+import { ModernNavbar } from '@/components/shared/ModernNavbar';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -103,7 +104,12 @@ const AdminDashboard = () => {
       patients: 45,
       rating: 4.8,
       consultations: 120,
-      status: 'active'
+      status: 'active',
+      patientList: [
+        { id: 1, name: 'Sarah Johnson', condition: 'Knee Surgery Recovery', lastVisit: '2024-01-20' },
+        { id: 2, name: 'Michael Brown', condition: 'Back Pain Therapy', lastVisit: '2024-01-18' },
+        { id: 3, name: 'Emily Davis', condition: 'Sports Injury', lastVisit: '2024-01-15' }
+      ]
     },
     {
       id: 5,
@@ -112,7 +118,12 @@ const AdminDashboard = () => {
       patients: 38,
       rating: 4.9,
       consultations: 95,
-      status: 'active'
+      status: 'active',
+      patientList: [
+        { id: 4, name: 'James Wilson', condition: 'Acne Treatment', lastVisit: '2024-01-19' },
+        { id: 5, name: 'Lisa Anderson', condition: 'Skin Allergy', lastVisit: '2024-01-17' },
+        { id: 6, name: 'David Kumar', condition: 'Eczema Management', lastVisit: '2024-01-16' }
+      ]
     }
   ]);
 
@@ -165,56 +176,13 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Admin Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-xl flex items-center justify-center">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
-                <p className="text-sm text-gray-500">Doci's Platform Management</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input 
-                  type="text" 
-                  placeholder="Search users, doctors..."
-                  className="pl-10 pr-4 py-2 w-64 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-              </div>
-              
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="w-5 h-5" />
-                <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-xs text-white font-bold">{pendingDoctors.length}</span>
-                </div>
-              </Button>
-              
-              <div className="flex items-center gap-3">
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback className="bg-red-100 text-red-600">
-                    AD
-                  </AvatarFallback>
-                </Avatar>
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium text-gray-900">Admin User</p>
-                  <p className="text-xs text-gray-500">System Administrator</p>
-                </div>
-                <Button variant="ghost" size="icon" onClick={signOut}>
-                  <MoreVertical className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background medical-hero-pattern">
+      <ModernNavbar 
+        title="Admin Dashboard"
+        subtitle="Doci's Platform Management"
+        showSearch={true}
+        showNotifications={true}
+      />
 
       <div className="flex">
         {/* Admin Sidebar */}
@@ -223,7 +191,7 @@ const AdminDashboard = () => {
             <Button
               variant={activeTab === 'overview' ? 'default' : 'ghost'}
               size="icon"
-              className={`w-12 h-12 rounded-xl ${activeTab === 'overview' ? 'bg-red-600 text-white' : 'text-gray-600'}`}
+              className={`w-12 h-12 rounded-xl ${activeTab === 'overview' ? 'bg-primary text-white' : 'text-muted-foreground hover:text-primary'}`}
               onClick={() => setActiveTab('overview')}
             >
               <TrendingUp className="w-5 h-5" />
@@ -232,22 +200,22 @@ const AdminDashboard = () => {
             <Button
               variant={activeTab === 'doctors' ? 'default' : 'ghost'}
               size="icon"
-              className={`w-12 h-12 rounded-xl relative ${activeTab === 'doctors' ? 'bg-red-600 text-white' : 'text-gray-600'}`}
+              className={`w-12 h-12 rounded-xl relative ${activeTab === 'doctors' ? 'bg-primary text-white' : 'text-muted-foreground hover:text-primary'}`}
               onClick={() => setActiveTab('doctors')}
             >
               <Stethoscope className="w-5 h-5" />
               {pendingDoctors.length > 0 && (
-                <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-xs text-white font-bold">{pendingDoctors.length}</span>
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full flex items-center justify-center">
+                  <span className="text-xs text-destructive-foreground font-bold">{pendingDoctors.length}</span>
                 </div>
               )}
             </Button>
             
             <Button
-              variant={activeTab === 'users' ? 'default' : 'ghost'}
+              variant={activeTab === 'relationships' ? 'default' : 'ghost'}
               size="icon"
-              className={`w-12 h-12 rounded-xl ${activeTab === 'users' ? 'bg-red-600 text-white' : 'text-gray-600'}`}
-              onClick={() => setActiveTab('users')}
+              className={`w-12 h-12 rounded-xl ${activeTab === 'relationships' ? 'bg-primary text-white' : 'text-muted-foreground hover:text-primary'}`}
+              onClick={() => setActiveTab('relationships')}
             >
               <Users className="w-5 h-5" />
             </Button>
@@ -255,7 +223,7 @@ const AdminDashboard = () => {
             <Button
               variant={activeTab === 'analytics' ? 'default' : 'ghost'}
               size="icon"
-              className={`w-12 h-12 rounded-xl ${activeTab === 'analytics' ? 'bg-red-600 text-white' : 'text-gray-600'}`}
+              className={`w-12 h-12 rounded-xl ${activeTab === 'analytics' ? 'bg-primary text-white' : 'text-muted-foreground hover:text-primary'}`}
               onClick={() => setActiveTab('analytics')}
             >
               <Database className="w-5 h-5" />
@@ -264,7 +232,7 @@ const AdminDashboard = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 animate-slide-up-medical">
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* System Stats */}
@@ -511,6 +479,128 @@ const AdminDashboard = () => {
                       </div>
                     ))}
                   </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {activeTab === 'relationships' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground">Patient-Doctor Relationships</h2>
+                  <p className="text-muted-foreground">Monitor and manage patient-doctor assignments</p>
+                </div>
+              </div>
+
+              {/* Doctor-Patient Overview */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {approvedDoctors.map((doctor) => (
+                  <Card key={doctor.id} className="glass-medical border-primary/20">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center gap-4">
+                        <Avatar className="w-12 h-12">
+                          <AvatarFallback className="bg-primary/10 text-primary">
+                            {doctor.fullName.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <CardTitle className="text-lg">{doctor.fullName}</CardTitle>
+                          <p className="text-sm text-muted-foreground">{doctor.specialization}</p>
+                        </div>
+                        <Badge variant="outline" className="bg-success/10 text-success border-success/20">
+                          {doctor.patients} Patients
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">Rating</span>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 fill-warning text-warning" />
+                            <span className="font-medium">{doctor.rating}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">Consultations</span>
+                          <span className="font-medium">{doctor.consultations}</span>
+                        </div>
+                      </div>
+
+                      {/* Patient List */}
+                      <div className="mt-6">
+                        <h4 className="text-sm font-medium mb-3 text-foreground">Recent Patients</h4>
+                        <div className="space-y-2">
+                          {doctor.patientList.map((patient) => (
+                            <div key={patient.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                              <div className="flex items-center gap-3">
+                                <Avatar className="w-8 h-8">
+                                  <AvatarFallback className="bg-secondary text-secondary-foreground text-xs">
+                                    {patient.name.split(' ').map(n => n[0]).join('')}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="text-sm font-medium">{patient.name}</p>
+                                  <p className="text-xs text-muted-foreground">{patient.condition}</p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-xs text-muted-foreground">Last Visit</p>
+                                <p className="text-xs font-medium">{patient.lastVisit}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Quick Actions */}
+                      <div className="mt-4 flex gap-2">
+                        <Button size="sm" variant="outline" className="flex-1">
+                          <MessageCircle className="w-4 h-4 mr-2" />
+                          Message
+                        </Button>
+                        <Button size="sm" variant="outline" className="flex-1">
+                          <Calendar className="w-4 h-4 mr-2" />
+                          Schedule
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Patient Assignment Tool */}
+              <Card className="glass-medical border-primary/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="w-5 h-5 text-primary" />
+                    Assign Patients to Doctors
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">Manage patient-doctor relationships</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Select Patient</label>
+                      <select className="w-full p-2 border border-border rounded-lg bg-background">
+                        <option>John Smith - Cardiology</option>
+                        <option>Jane Doe - General</option>
+                        <option>Bob Johnson - Orthopedics</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Assign to Doctor</label>
+                      <select className="w-full p-2 border border-border rounded-lg bg-background">
+                        <option>Dr. James Mwangi - Orthopedics</option>
+                        <option>Dr. Mary Njeri - Dermatology</option>
+                      </select>
+                    </div>
+                  </div>
+                  <Button className="mt-4" onClick={() => toast.success('Patient assigned successfully!')}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Assign Patient
+                  </Button>
                 </CardContent>
               </Card>
             </div>

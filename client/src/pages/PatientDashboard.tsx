@@ -42,6 +42,7 @@ import CommunityGroups from '@/components/patient/CommunityGroups';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'wouter';
 import { useEffect } from 'react';
+import { ModernNavbar } from '@/components/shared/ModernNavbar';
 
 const PatientDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -73,54 +74,11 @@ const PatientDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Modern Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                <Heart className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">Patient Dashboard</h1>
-                <p className="text-sm text-gray-500">Welcome back, {user.fullName || 'John'}</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input 
-                  type="text" 
-                  placeholder="Find Anything"
-                  className="pl-10 pr-4 py-2 w-64 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="w-5 h-5" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-              </Button>
-              
-              <div className="flex items-center gap-3">
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback className="bg-blue-100 text-blue-600">
-                    {user.fullName?.charAt(0) || 'J'}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium text-gray-900">{user.fullName || 'John Doe'}</p>
-                  <p className="text-xs text-gray-500">Patient</p>
-                </div>
-                <Button variant="ghost" size="icon" onClick={handleSignOut}>
-                  <MoreVertical className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background medical-hero-pattern">
+      <ModernNavbar 
+        title="Patient Dashboard"
+        subtitle={`Welcome back, ${user.fullName || 'Patient'}`}
+      />
 
       <div className="flex">
         {/* Modern Sidebar */}
@@ -183,17 +141,29 @@ const PatientDashboard = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 animate-slide-up-medical">
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* Patient Info Card */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <Card className="lg:col-span-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
-                  <CardContent className="p-6">
+                <Card className="lg:col-span-2 glass-medical border-primary/20 relative overflow-hidden">
+                  {/* Medical Background Pattern */}
+                  <div className="absolute inset-0 opacity-5">
+                    <svg className="w-full h-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <pattern id="medical-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                          <circle cx="20" cy="20" r="2" fill="currentColor"/>
+                          <path d="M15 20h10M20 15v10" stroke="currentColor" strokeWidth="1"/>
+                        </pattern>
+                      </defs>
+                      <rect width="100%" height="100%" fill="url(#medical-pattern)"/>
+                    </svg>
+                  </div>
+                  <CardContent className="p-6 relative z-10">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h2 className="text-2xl font-bold">Patient Info</h2>
-                        <p className="text-blue-100">Your health overview</p>
+                        <h2 className="text-2xl font-bold text-primary">Patient Info</h2>
+                        <p className="text-muted-foreground">Your health overview</p>
                       </div>
                       <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
                         <MoreVertical className="w-5 h-5" />

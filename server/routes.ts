@@ -50,6 +50,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { email, password } = req.body;
       
+      // Check for admin credentials first
+      if (email === "joshuangich2@gmail.com" && password === "12345678") {
+        const token = jwt.sign({ userId: "admin", userType: "admin" }, JWT_SECRET, { expiresIn: "7d" });
+        return res.json({
+          user: {
+            id: "admin",
+            email: "joshuangich2@gmail.com",
+            fullName: "Admin User",
+            userType: "admin"
+          },
+          token
+        });
+      }
+      
       // Find user
       const user = await storage.getUserByEmail(email);
       if (!user) {
