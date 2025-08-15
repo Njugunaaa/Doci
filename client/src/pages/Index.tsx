@@ -101,7 +101,9 @@ const Index = () => {
             <Button 
               size="lg" 
               variant="outline" 
-              onClick={handleSignup}
+              onClick={() => {
+                setLocation('/signup?type=doctor');
+              }}
               className="text-lg px-8 py-3 border-2 hover:bg-blue-50 dark:hover:bg-gray-800"
             >
               Join as Doctor
@@ -187,7 +189,9 @@ const Index = () => {
             <Button 
               size="lg" 
               variant="secondary"
-              onClick={handleSignup}
+              onClick={() => {
+                setLocation('/signup?type=doctor');
+              }}
               className="text-lg px-8 py-3 bg-white text-blue-600 hover:bg-gray-100"
             >
               Join as Doctor

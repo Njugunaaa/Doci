@@ -345,14 +345,14 @@ export default function EnhancedSmartDocChat() {
             <div key={conv.id} className={`flex gap-3 ${conv.type === 'user' ? 'justify-end' : 'justify-start'}`}>
               {conv.type === 'bot' && (
                 <div className={`w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  conv.isTyping ? 'animate-pulse' : ''
+                  (conv as any).isTyping ? 'animate-pulse' : ''
                 }`}>
-                  <Bot className={`w-5 h-5 text-white ${conv.isTyping ? 'animate-bounce' : ''}`} />
+                  <Bot className={`w-5 h-5 text-white ${(conv as any).isTyping ? 'animate-bounce' : ''}`} />
                 </div>
               )}
               
               <div className={`max-w-[75%] ${conv.type === 'user' ? 'order-2' : ''}`}>
-                <div className={`p-4 rounded-2xl shadow-sm ${conv.isTyping ? 'animate-pulse' : ''} ${
+                <div className={`p-4 rounded-2xl shadow-sm ${(conv as any).isTyping ? 'animate-pulse' : ''} ${
                   conv.type === 'user' 
                     ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white ml-auto' 
                     : 'bg-white border border-gray-200 text-gray-900'

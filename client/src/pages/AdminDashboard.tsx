@@ -165,7 +165,7 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
     );
@@ -176,7 +176,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background medical-hero-pattern">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 medical-hero-pattern">
       <ModernNavbar 
         title="Admin Dashboard"
         subtitle="Doci's Platform Management"

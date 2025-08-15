@@ -61,7 +61,7 @@ const DoctorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
     );
@@ -92,7 +92,7 @@ const DoctorDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       {/* Modern Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="px-6 py-4">
@@ -102,7 +102,7 @@ const DoctorDashboard = () => {
                 <Stethoscope className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">Patient Queue</h1>
+                <h1 className="text-xl font-semibold text-gray-900">Hello Dr. {user.fullName || 'Doctor'}</h1>
                 <div className="flex items-center gap-4">
                   <Button variant="ghost" size="sm" className="p-0 h-auto">
                     <ChevronRight className="w-4 h-4 rotate-180" />
@@ -132,16 +132,17 @@ const DoctorDashboard = () => {
               
               <div className="flex items-center gap-3">
                 <Avatar className="w-8 h-8">
+                  <AvatarImage src="https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face" />
                   <AvatarFallback className="bg-blue-100 text-blue-600">
-                    JB
+                    {user.fullName?.charAt(0) || 'D'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="hidden md:block">
-                  <p className="text-sm font-medium text-gray-900">Dr. John Billoq</p>
+                  <p className="text-sm font-medium text-gray-900">Dr. {user.fullName || 'Doctor'}</p>
                   <p className="text-xs text-gray-500">Orthopedist</p>
                 </div>
-                <Button variant="ghost" size="icon" onClick={handleSignOut}>
-                  <MoreVertical className="w-4 h-4" />
+                <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                  Logout
                 </Button>
               </div>
             </div>

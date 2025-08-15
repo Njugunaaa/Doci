@@ -122,9 +122,23 @@ export function ModernNavbar({
             {/* Theme Toggle */}
             <ThemeToggle />
 
+            {/* Admin Link */}
+            {user?.email === 'joshuangich2@gmail.com' && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/.admin'}
+                className="hidden md:flex"
+              >
+                <Shield className="w-4 h-4 mr-2" />
+                Admin
+              </Button>
+            )}
+
             {/* User Menu */}
             <div className="flex items-center gap-3">
               <Avatar className="w-9 h-9 ring-2 ring-primary/20">
+                <AvatarImage src="https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face" />
                 <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-white font-semibold">
                   {user?.fullName?.charAt(0) || user?.email?.charAt(0) || 'U'}
                 </AvatarFallback>
@@ -137,8 +151,8 @@ export function ModernNavbar({
                 </p>
               </div>
 
-              <Button variant="ghost" size="icon" onClick={handleSignOut}>
-                <Settings className="w-4 h-4" />
+              <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                Logout
               </Button>
             </div>
 

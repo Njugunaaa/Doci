@@ -43,7 +43,12 @@ export default function Login() {
         toast.success('Successfully signed in!');
         // Navigate to appropriate dashboard
         setTimeout(() => {
-          setLocation('/patient-dashboard'); // Default for now
+          // Check user type and redirect accordingly
+          if (email === 'joshuangich2@gmail.com') {
+            setLocation('/.admin');
+          } else {
+            setLocation('/patient-dashboard');
+          }
         }, 500);
       }
     } catch (error) {

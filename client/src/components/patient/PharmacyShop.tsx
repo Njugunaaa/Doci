@@ -31,7 +31,7 @@ export default function PharmacyShop() {
       category: 'Pain Relief',
       rating: 4.5,
       inStock: true,
-      image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="%23ffffff" width="200" height="200"/><rect fill="%23ff6b6b" x="20" y="60" width="160" height="80" rx="40"/><text x="100" y="110" font-size="16" text-anchor="middle" fill="white" font-family="Arial">PANADOL</text><circle fill="%23ff6b6b" cx="50" cy="50" r="15"/><circle fill="%23ff6b6b" cx="150" cy="50" r="15"/><circle fill="%23ff6b6b" cx="50" cy="150" r="15"/><circle fill="%23ff6b6b" cx="150" cy="150" r="15"/></svg>',
+      image: 'https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Fast relief for headaches, fever and body pain',
       brand: 'GSK Kenya'
     },
@@ -42,7 +42,7 @@ export default function PharmacyShop() {
       category: 'Vitamins',
       rating: 4.8,
       inStock: true,
-      image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="%23f8f9fa" width="200" height="200"/><rect fill="%23ffd93d" x="30" y="30" width="140" height="140" rx="20"/><text x="100" y="85" font-size="14" text-anchor="middle" fill="%23333" font-family="Arial">VITAMIN</text><text x="100" y="105" font-size="20" text-anchor="middle" fill="%23333" font-family="Arial" font-weight="bold">D3</text><text x="100" y="125" font-size="12" text-anchor="middle" fill="%23666" font-family="Arial">60 TABLETS</text><circle fill="%23ffeb3b" cx="100" cy="145" r="8"/></svg>',
+      image: 'https://images.pexels.com/photos/3683056/pexels-photo-3683056.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Essential vitamin D3 for bone health - 60 tablets',
       brand: 'Healthy U Kenya'
     },
@@ -53,7 +53,7 @@ export default function PharmacyShop() {
       category: 'Supplements',
       rating: 4.6,
       inStock: true,
-      image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="%23e3f2fd" width="200" height="200"/><rect fill="%234fc3f7" x="25" y="25" width="150" height="150" rx="25"/><text x="100" y="75" font-size="14" text-anchor="middle" fill="white" font-family="Arial">OMEGA-3</text><text x="100" y="95" font-size="12" text-anchor="middle" fill="white" font-family="Arial">FISH OIL</text><ellipse fill="%2329b6f6" cx="100" cy="120" rx="25" ry="15"/><circle fill="%2303a9f4" cx="85" cy="140" r="8"/><circle fill="%2303a9f4" cx="115" cy="140" r="8"/><text x="100" y="160" font-size="10" text-anchor="middle" fill="white" font-family="Arial">90 CAPSULES</text></svg>',
+      image: 'https://images.pexels.com/photos/3683089/pexels-photo-3683089.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Premium fish oil for heart health - 90 capsules',
       brand: 'Nature\'s Way Kenya'
     },
@@ -64,7 +64,7 @@ export default function PharmacyShop() {
       category: 'Medical Devices',
       rating: 4.7,
       inStock: true,
-      image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="%23f5f5f5" width="200" height="200"/><rect fill="%23ffffff" x="75" y="30" width="50" height="120" rx="25" stroke="%23ddd" stroke-width="2"/><rect fill="%23ff5722" x="85" y="120" width="30" height="20" rx="15"/><text x="100" y="70" font-size="10" text-anchor="middle" fill="%23333" font-family="Arial">DIGITAL</text><text x="100" y="85" font-size="8" text-anchor="middle" fill="%23666" font-family="Arial">THERMOMETER</text><rect fill="%23333" x="95" y="40" width="10" height="2"/><rect fill="%23333" x="95" y="45" width="10" height="2"/><rect fill="%23333" x="95" y="50" width="10" height="2"/><text x="100" y="170" font-size="12" text-anchor="middle" fill="%23333" font-family="Arial">36.5°C</text></svg>',
+      image: 'https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Fast and accurate temperature readings',
       brand: 'Omron Kenya'
     },
@@ -75,7 +75,7 @@ export default function PharmacyShop() {
       category: 'Medical Supplies',
       rating: 4.9,
       inStock: false,
-      image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="%23f8f9fa" width="200" height="200"/><rect fill="%23dc3545" x="30" y="50" width="140" height="100" rx="10"/><rect fill="%23ffffff" x="90" y="70" width="20" height="60" rx="2"/><rect fill="%23ffffff" x="70" y="90" width="60" height="20" rx="2"/><text x="100" y="35" font-size="10" text-anchor="middle" fill="%23333" font-family="Arial">FIRST AID</text><text x="100" y="175" font-size="8" text-anchor="middle" fill="%23666" font-family="Arial">FAMILY SIZE</text></svg>',
+      image: 'https://images.pexels.com/photos/6823568/pexels-photo-6823568.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Complete first aid kit for home emergencies',
       brand: 'SafeCare Kenya'
     },
@@ -86,7 +86,7 @@ export default function PharmacyShop() {
       category: 'Medical Devices',
       rating: 4.4,
       inStock: true,
-      image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="%23f0f0f0" width="200" height="200"/><rect fill="%23ffffff" x="40" y="60" width="120" height="80" rx="10" stroke="%23ddd" stroke-width="2"/><rect fill="%23333" x="50" y="70" width="100" height="40" rx="5"/><text x="100" y="95" font-size="14" text-anchor="middle" fill="%2300ff00" font-family="Arial">120/80</text><circle fill="%23666" cx="60" cy="125" r="8"/><circle fill="%23666" cx="140" cy="125" r="8"/><path d="M70 120 Q100 100 130 120" stroke="%23333" stroke-width="3" fill="none"/><text x="100" y="175" font-size="10" text-anchor="middle" fill="%23333" font-family="Arial">OMRON</text></svg>',
+      image: 'https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Home blood pressure monitoring device',
       brand: 'Omron Kenya'
     },
@@ -97,7 +97,7 @@ export default function PharmacyShop() {
       category: 'Antibiotics',
       rating: 4.3,
       inStock: true,
-      image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="%23fff3e0" width="200" height="200"/><rect fill="%23ff9800" x="20" y="40" width="160" height="120" rx="15"/><text x="100" y="70" font-size="14" text-anchor="middle" fill="white" font-family="Arial">AMOXICILLIN</text><text x="100" y="90" font-size="16" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold">500mg</text><text x="100" y="110" font-size="10" text-anchor="middle" fill="white" font-family="Arial">21 CAPSULES</text><rect fill="%23f57c00" x="30" y="130" width="20" height="10" rx="5"/><rect fill="%23f57c00" x="60" y="130" width="20" height="10" rx="5"/><rect fill="%23f57c00" x="90" y="130" width="20" height="10" rx="5"/><rect fill="%23f57c00" x="120" y="130" width="20" height="10" rx="5"/><rect fill="%23f57c00" x="150" y="130" width="20" height="10" rx="5"/><text x="100" y="25" font-size="8" text-anchor="middle" fill="%23d84315" font-family="Arial">⚠ PRESCRIPTION REQUIRED</text></svg>',
+      image: 'https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Antibiotic for bacterial infections - 21 capsules',
       brand: 'Cosmos Kenya',
       prescription: true
@@ -109,7 +109,7 @@ export default function PharmacyShop() {
       category: 'Diagnostic',
       rating: 4.6,
       inStock: true,
-      image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="%23e8f5e8" width="200" height="200"/><rect fill="%23ffffff" x="50" y="40" width="100" height="120" rx="10" stroke="%2366bb6a" stroke-width="2"/><rect fill="%2366bb6a" x="60" y="50" width="80" height="30" rx="5"/><text x="100" y="70" font-size="10" text-anchor="middle" fill="white" font-family="Arial">MALARIA TEST</text><rect fill="%23e0e0e0" x="70" y="90" width="60" height="50" rx="5"/><circle fill="%2366bb6a" cx="85" cy="105" r="3"/><circle fill="%23ff5722" cx="115" cy="105" r="3"/><text x="85" y="125" font-size="8" text-anchor="middle" fill="%23333" font-family="Arial">C</text><text x="115" y="125" font-size="8" text-anchor="middle" fill="%23333" font-family="Arial">T</text><text x="100" y="180" font-size="8" text-anchor="middle" fill="%23333" font-family="Arial">RAPID DIAGNOSTIC</text></svg>',
+      image: 'https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Rapid malaria diagnostic test',
       brand: 'Access Bio Kenya'
     },
@@ -120,7 +120,7 @@ export default function PharmacyShop() {
       category: 'Emergency Care',
       rating: 4.8,
       inStock: true,
-      image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="%23e3f2fd" width="200" height="200"/><rect fill="%232196f3" x="30" y="30" width="140" height="140" rx="20"/><text x="100" y="60" font-size="16" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold">ORS</text><text x="100" y="80" font-size="10" text-anchor="middle" fill="white" font-family="Arial">ORAL REHYDRATION</text><text x="100" y="95" font-size="10" text-anchor="middle" fill="white" font-family="Arial">SALTS</text><circle fill="%2364b5f6" cx="100" cy="120" r="20"/><text x="100" y="127" font-size="8" text-anchor="middle" fill="white" font-family="Arial">WHO/UNICEF</text><text x="100" y="140" font-size="8" text-anchor="middle" fill="white" font-family="Arial">APPROVED</text><text x="100" y="185" font-size="8" text-anchor="middle" fill="%23333" font-family="Arial">SACHETS</text></svg>',
+      image: 'https://images.pexels.com/photos/3683089/pexels-photo-3683089.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'WHO/UNICEF approved ORS for dehydration',
       brand: 'Shelys Kenya'
     },
@@ -131,7 +131,7 @@ export default function PharmacyShop() {
       category: 'Prevention',
       rating: 4.7,
       inStock: true,
-      image: '/placeholder.svg',
+      image: 'https://images.pexels.com/photos/6823568/pexels-photo-6823568.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Long-lasting insecticidal net for malaria prevention',
       brand: 'Vestergaard Kenya'
     },
@@ -142,7 +142,7 @@ export default function PharmacyShop() {
       category: 'Prevention',
       rating: 4.5,
       inStock: true,
-      image: '/placeholder.svg',
+      image: 'https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Aquatabs for safe drinking water - 50 tablets',
       brand: 'Medentech Kenya'
     },
@@ -153,7 +153,7 @@ export default function PharmacyShop() {
       category: 'Supplements',
       rating: 4.4,
       inStock: true,
-      image: '/placeholder.svg',
+      image: 'https://images.pexels.com/photos/3683056/pexels-photo-3683056.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
       description: 'Zinc tablets for immune support - 30 tablets',
       brand: 'Healthy Living Kenya'
     }
@@ -269,9 +269,11 @@ export default function PharmacyShop() {
               <Card key={product.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                    <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
-                      <span className="text-xs text-gray-500">Product Image</span>
-                    </div>
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
@@ -337,7 +339,11 @@ export default function PharmacyShop() {
                   {cart.map((item) => (
                     <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg"></div>
+                        <img 
+                          src={item.image} 
+                          alt={item.name}
+                          className="w-12 h-12 object-cover rounded-lg"
+                        />
                         <div>
                           <h4 className="font-medium">{item.name}</h4>
                           <p className="text-sm text-gray-600">KSh {item.price.toLocaleString()}</p>

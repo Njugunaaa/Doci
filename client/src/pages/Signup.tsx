@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'wouter';
+import { Link, useLocation, useSearch } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,10 @@ import { Badge } from "@/components/ui/badge";
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [userType, setUserType] = useState<'patient' | 'doctor'>('patient');
+  const searchParams = useSearch();
+  const urlParams = new URLSearchParams(searchParams);
+  const typeFromUrl = urlParams.get('type') as 'patient' | 'doctor' | null;
+  const [userType, setUserType] = useState<'patient' | 'doctor'>(typeFromUrl || 'patient');
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',

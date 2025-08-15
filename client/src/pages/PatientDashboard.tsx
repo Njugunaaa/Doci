@@ -63,7 +63,7 @@ const PatientDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
     );
@@ -74,10 +74,10 @@ const PatientDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background medical-hero-pattern">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 medical-hero-pattern">
       <ModernNavbar 
         title="Patient Dashboard"
-        subtitle={`Welcome back, ${user.fullName || 'Patient'}`}
+        subtitle={`Hello ${user.fullName || 'Patient'}, welcome back!`}
       />
 
       <div className="flex">
@@ -146,7 +146,7 @@ const PatientDashboard = () => {
             <div className="space-y-6">
               {/* Patient Info Card */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <Card className="lg:col-span-2 glass-medical border-primary/20 relative overflow-hidden">
+                <Card className="lg:col-span-2 glass-medical border-primary/20 relative overflow-hidden bg-gradient-to-br from-blue-600 to-green-600 text-white">
                   {/* Medical Background Pattern */}
                   <div className="absolute inset-0 opacity-5">
                     <svg className="w-full h-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
@@ -162,8 +162,8 @@ const PatientDashboard = () => {
                   <CardContent className="p-6 relative z-10">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h2 className="text-2xl font-bold text-primary">Patient Info</h2>
-                        <p className="text-muted-foreground">Your health overview</p>
+                        <h2 className="text-2xl font-bold text-white">Hello, {user.fullName || 'Patient'}!</h2>
+                        <p className="text-blue-100">Your health overview</p>
                       </div>
                       <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
                         <MoreVertical className="w-5 h-5" />
@@ -172,8 +172,9 @@ const PatientDashboard = () => {
                     
                     <div className="flex items-center gap-6">
                       <div className="relative">
-                        <Avatar className="w-24 h-24 border-4 border-white/20">
-                          <AvatarFallback className="bg-white/20 text-white text-xl">
+                        <Avatar className="w-24 h-24 border-4 border-white/30">
+                          <AvatarImage src="https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop&crop=face" />
+                          <AvatarFallback className="bg-white/30 text-white text-xl">
                             {user.fullName?.charAt(0) || 'J'}
                           </AvatarFallback>
                         </Avatar>
@@ -183,9 +184,9 @@ const PatientDashboard = () => {
                       </div>
                       
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold">{user.fullName || 'John Doe'}</h3>
+                        <h3 className="text-xl font-bold text-white">{user.fullName || 'John Doe'}</h3>
                         <p className="text-blue-100 mb-2">Male • 28 years old</p>
-                        <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-4 text-sm text-blue-100">
                           <div className="flex items-center gap-2">
                             <Scale className="w-4 h-4" />
                             <span>68 kg</span>
@@ -197,7 +198,7 @@ const PatientDashboard = () => {
                         </div>
                         
                         <div className="mt-4">
-                          <div className="flex justify-between text-sm mb-1">
+                          <div className="flex justify-between text-sm mb-1 text-blue-100">
                             <span>Health Score</span>
                             <span>85%</span>
                           </div>

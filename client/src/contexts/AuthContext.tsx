@@ -66,6 +66,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string) => {
     try {
+      // Check for admin credentials first
+      if (email === "joshuangich2@gmail.com" && password === "12345678") {
+        const adminUser = {
+          id: 999,
+          email: "joshuangich2@gmail.com",
+          fullName: 'Admin User',
+          userType: 'admin',
+        };
+
+        const adminToken = 'admin_token_' + Date.now();
+        
+        localStorage.setItem('auth_token', adminToken);
+        localStorage.setItem('user_data', JSON.stringify(adminUser));
+        setUser(adminUser);
+
+        return {};
+      }
+      
       // For demo purposes, simulate successful signin
       await new Promise(resolve => setTimeout(resolve, 1000));
       
