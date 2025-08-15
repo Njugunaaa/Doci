@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,73 +13,149 @@ import {
   Truck,
   CreditCard,
   History,
-  Filter
+  Filter,
+  Phone,
+  MessageCircle
 } from 'lucide-react';
 
 export default function PharmacyShop() {
   const [cart, setCart] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Kenyan market focused products
   const products = [
     {
       id: 1,
-      name: 'Paracetamol 500mg',
-      price: 12.99,
+      name: 'Panadol Extra (Paracetamol 500mg)',
+      price: 150,
       category: 'Pain Relief',
       rating: 4.5,
       inStock: true,
       image: '/placeholder.svg',
-      description: 'Effective pain relief and fever reducer'
+      description: 'Fast relief for headaches, fever and body pain',
+      brand: 'GSK Kenya'
     },
     {
       id: 2,
       name: 'Vitamin D3 Supplements',
-      price: 24.99,
+      price: 1200,
       category: 'Vitamins',
       rating: 4.8,
       inStock: true,
       image: '/placeholder.svg',
-      description: 'Essential vitamin D3 for bone health'
+      description: 'Essential vitamin D3 for bone health - 60 tablets',
+      brand: 'Healthy U Kenya'
     },
     {
       id: 3,
-      name: 'Omega-3 Fish Oil',
-      price: 34.99,
+      name: 'Omega-3 Fish Oil Capsules',
+      price: 2500,
       category: 'Supplements',
       rating: 4.6,
       inStock: true,
       image: '/placeholder.svg',
-      description: 'Premium fish oil for heart health'
+      description: 'Premium fish oil for heart health - 90 capsules',
+      brand: 'Nature\'s Way Kenya'
     },
     {
       id: 4,
       name: 'Digital Thermometer',
-      price: 19.99,
+      price: 800,
       category: 'Medical Devices',
       rating: 4.7,
       inStock: true,
       image: '/placeholder.svg',
-      description: 'Fast and accurate temperature readings'
+      description: 'Fast and accurate temperature readings',
+      brand: 'Omron Kenya'
     },
     {
       id: 5,
-      name: 'First Aid Kit',
-      price: 45.99,
+      name: 'First Aid Kit - Family Size',
+      price: 3500,
       category: 'Medical Supplies',
       rating: 4.9,
       inStock: false,
       image: '/placeholder.svg',
-      description: 'Complete first aid kit for emergencies'
+      description: 'Complete first aid kit for home emergencies',
+      brand: 'SafeCare Kenya'
     },
     {
       id: 6,
       name: 'Blood Pressure Monitor',
-      price: 89.99,
+      price: 6500,
       category: 'Medical Devices',
       rating: 4.4,
       inStock: true,
       image: '/placeholder.svg',
-      description: 'Home blood pressure monitoring device'
+      description: 'Home blood pressure monitoring device',
+      brand: 'Omron Kenya'
+    },
+    {
+      id: 7,
+      name: 'Amoxicillin 500mg',
+      price: 300,
+      category: 'Antibiotics',
+      rating: 4.3,
+      inStock: true,
+      image: '/placeholder.svg',
+      description: 'Antibiotic for bacterial infections - 21 capsules',
+      brand: 'Cosmos Kenya',
+      prescription: true
+    },
+    {
+      id: 8,
+      name: 'Malaria Test Kit',
+      price: 250,
+      category: 'Diagnostic',
+      rating: 4.6,
+      inStock: true,
+      image: '/placeholder.svg',
+      description: 'Rapid malaria diagnostic test',
+      brand: 'Access Bio Kenya'
+    },
+    {
+      id: 9,
+      name: 'ORS (Oral Rehydration Salts)',
+      price: 50,
+      category: 'Emergency Care',
+      rating: 4.8,
+      inStock: true,
+      image: '/placeholder.svg',
+      description: 'WHO/UNICEF approved ORS for dehydration',
+      brand: 'Shelys Kenya'
+    },
+    {
+      id: 10,
+      name: 'Mosquito Net (LLIN)',
+      price: 800,
+      category: 'Prevention',
+      rating: 4.7,
+      inStock: true,
+      image: '/placeholder.svg',
+      description: 'Long-lasting insecticidal net for malaria prevention',
+      brand: 'Vestergaard Kenya'
+    },
+    {
+      id: 11,
+      name: 'Water Purification Tablets',
+      price: 180,
+      category: 'Prevention',
+      rating: 4.5,
+      inStock: true,
+      image: '/placeholder.svg',
+      description: 'Aquatabs for safe drinking water - 50 tablets',
+      brand: 'Medentech Kenya'
+    },
+    {
+      id: 12,
+      name: 'Zinc Supplements',
+      price: 450,
+      category: 'Supplements',
+      rating: 4.4,
+      inStock: true,
+      image: '/placeholder.svg',
+      description: 'Zinc tablets for immune support - 30 tablets',
+      brand: 'Healthy Living Kenya'
     }
   ];
 
@@ -88,15 +163,15 @@ export default function PharmacyShop() {
     {
       id: 'ORD-001',
       date: '2024-01-15',
-      items: ['Paracetamol 500mg', 'Vitamin D3'],
-      total: 37.98,
+      items: ['Panadol Extra', 'Vitamin D3'],
+      total: 1350,
       status: 'Delivered'
     },
     {
       id: 'ORD-002',
       date: '2024-01-10',
       items: ['Omega-3 Fish Oil'],
-      total: 34.99,
+      total: 2500,
       status: 'Delivered'
     }
   ];
@@ -130,11 +205,23 @@ export default function PharmacyShop() {
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchTerm.toLowerCase())
+    product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.brand.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Doci's Pharmacy</h2>
+          <p className="text-gray-600">Quality medicines delivered to your doorstep across Kenya</p>
+        </div>
+        <Badge className="bg-green-100 text-green-700">
+          <Truck className="w-3 h-3 mr-1" />
+          Free delivery in Nairobi
+        </Badge>
+      </div>
+
       <Tabs defaultValue="shop" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="shop">Shop</TabsTrigger>
@@ -164,6 +251,15 @@ export default function PharmacyShop() {
                   Filters
                 </Button>
               </div>
+              
+              {/* Category Pills */}
+              <div className="flex flex-wrap gap-2 mt-4">
+                {['All', 'Pain Relief', 'Vitamins', 'Antibiotics', 'Medical Devices', 'Prevention'].map((category) => (
+                  <Badge key={category} variant="outline" className="cursor-pointer hover:bg-blue-50">
+                    {category}
+                  </Badge>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
@@ -173,14 +269,24 @@ export default function PharmacyShop() {
               <Card key={product.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                    <div className="w-20 h-20 bg-gray-200 rounded-lg"></div>
+                    <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <span className="text-xs text-gray-500">Product Image</span>
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <Badge variant="outline" className="text-xs">
-                      {product.category}
-                    </Badge>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className="text-xs">
+                        {product.category}
+                      </Badge>
+                      {product.prescription && (
+                        <Badge variant="destructive" className="text-xs">
+                          Prescription Required
+                        </Badge>
+                      )}
+                    </div>
                     <CardTitle className="text-lg">{product.name}</CardTitle>
                     <p className="text-sm text-gray-600">{product.description}</p>
+                    <p className="text-xs text-blue-600 font-medium">{product.brand}</p>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -189,7 +295,7 @@ export default function PharmacyShop() {
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                       <span className="text-sm">{product.rating}</span>
                     </div>
-                    <span className="text-lg font-bold">${product.price}</span>
+                    <span className="text-lg font-bold">KSh {product.price.toLocaleString()}</span>
                   </div>
                   
                   <Button 
@@ -234,7 +340,8 @@ export default function PharmacyShop() {
                         <div className="w-12 h-12 bg-gray-100 rounded-lg"></div>
                         <div>
                           <h4 className="font-medium">{item.name}</h4>
-                          <p className="text-sm text-gray-600">${item.price}</p>
+                          <p className="text-sm text-gray-600">KSh {item.price.toLocaleString()}</p>
+                          <p className="text-xs text-blue-600">{item.brand}</p>
                         </div>
                       </div>
                       
@@ -256,8 +363,8 @@ export default function PharmacyShop() {
                             <Plus className="w-3 h-3" />
                           </Button>
                         </div>
-                        <span className="font-medium w-20 text-right">
-                          ${(item.price * item.quantity).toFixed(2)}
+                        <span className="font-medium w-24 text-right">
+                          KSh {(item.price * item.quantity).toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -266,18 +373,28 @@ export default function PharmacyShop() {
                   {/* Cart Summary */}
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center mb-4">
-                      <span className="text-lg font-semibold">Total: ${getTotalPrice().toFixed(2)}</span>
+                      <span className="text-lg font-semibold">Total: KSh {getTotalPrice().toLocaleString()}</span>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <Button className="bg-green-600 hover:bg-green-700">
                         <CreditCard className="w-4 h-4 mr-2" />
                         Pay with M-Pesa
                       </Button>
                       <Button variant="outline">
-                        <Truck className="w-4 h-4 mr-2" />
+                        <MessageCircle className="w-4 h-4 mr-2" />
                         WhatsApp Order
                       </Button>
+                      <Button variant="outline">
+                        <Phone className="w-4 h-4 mr-2" />
+                        Call to Order
+                      </Button>
+                    </div>
+                    
+                    <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                      <p className="text-sm text-blue-700">
+                        📞 Need help? Call our pharmacy hotline: +254 700 123 456
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -313,7 +430,7 @@ export default function PharmacyShop() {
                     </div>
                     
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">Total: ${order.total}</span>
+                      <span className="font-medium">Total: KSh {order.total.toLocaleString()}</span>
                       <Button size="sm" variant="outline">
                         Reorder
                       </Button>
@@ -325,6 +442,22 @@ export default function PharmacyShop() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Emergency Contact */}
+      <Card className="bg-red-50 border-red-200">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-red-800">Emergency Medicine Delivery</h3>
+              <p className="text-sm text-red-600">Need urgent medication? We deliver within 30 minutes in Nairobi</p>
+            </div>
+            <Button className="bg-red-600 hover:bg-red-700">
+              <Phone className="w-4 h-4 mr-2" />
+              Call Emergency
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

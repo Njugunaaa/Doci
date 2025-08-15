@@ -23,6 +23,8 @@ export const doctors = pgTable("doctors", {
   consultationFee: decimal("consultation_fee", { precision: 10, scale: 2 }),
   isVerified: boolean("is_verified").default(false),
   verificationStatus: text("verification_status").default("pending"), // 'pending', 'approved', 'rejected'
+  rejectionReason: text("rejection_reason"),
+  documentsUploaded: boolean("documents_uploaded").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

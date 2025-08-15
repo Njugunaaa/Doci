@@ -17,6 +17,11 @@ export interface IStorage {
   getCommunities(): Promise<Community[]>;
   getCommunity(id: number): Promise<Community | undefined>;
   createCommunity(community: InsertCommunity): Promise<Community>;
+  
+  // Admin methods
+  getPendingDoctors(): Promise<any[]>;
+  approveDoctorVerification(doctorId: number): Promise<void>;
+  rejectDoctorVerification(doctorId: number, reason: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -75,6 +80,47 @@ export class DatabaseStorage implements IStorage {
       .values(community)
       .returning();
     return newCommunity;
+  }
+
+  async getPendingDoctors(): Promise<any[]> {
+    const result = await db
+      .select({
+        id: doctors.id,
+        fullName: users.fullName,
+        email: users.email,
+        specialization: doctors.specialization,
+        licenseNumber: doctors.licenseNumber,
+        bio: doctors.bio,
+        yearsExperience: doctors.yearsExperience,
+        consultationFee: doctors.consultationFee,
+        verificationStatus: doctors.verificationStatus,
+        createdAt: doctors.createdAt,
+      })
+      .from(doctors)
+      .innerJoin(users, eq(doctors.id, users.id))
+      .where(eq(doctors.verificationStatus, 'pending'));
+    
+    return result;
+  }
+
+  async approveDoctorVerification(doctorId: number): Promise<void> {
+    await db
+      .update(doctors)
+      .set({ 
+        verificationStatus: 'approved',
+        isVerified: true 
+      })
+      .where(eq(doctors.id, doctorId));
+  }
+
+  async rejectDoctorVerification(doctorId: number, reason: string): Promise<void> {
+    await db
+      .update(doctors)
+      .set({ 
+        verificationStatus: 'rejected',
+        rejectionReason: reason 
+      })
+      .where(eq(doctors.id, doctorId));
   }
 }
 

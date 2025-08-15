@@ -103,6 +103,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin routes
+  app.get("/api/admin/pending-doctors", async (req, res) => {
+    try {
+      const pendingDoctors = await storage.getPendingDoctors();
+      res.json(pendingDoctors);
+    } catch (error) {
+      console.error("Get pending doctors error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/approve-doctor/:id", async (req, res) => {
+    try {
+      const doctorId = parseInt(req.params.id);
+      await storage.approveDoctorVerification(doctorId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Approve doctor error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/reject-doctor/:id", async (req, res) => {
+    try {
+      const doctorId = parseInt(req.params.id);
+      const { reason } = req.body;
+      await storage.rejectDoctorVerification(doctorId, reason);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Reject doctor error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
   const httpServer = createServer(app);
 
   return httpServer;

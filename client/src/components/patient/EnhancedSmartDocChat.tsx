@@ -26,7 +26,6 @@ interface ConversationMessage {
   message: string;
   timestamp: string;
   suggestions?: string[];
-  isTyping?: boolean;
 }
 
 export default function EnhancedSmartDocChat() {
